@@ -1,0 +1,380 @@
+[
+  {
+    "objectID": "notebooks/scale-basics.html",
+    "href": "notebooks/scale-basics.html",
+    "title": "Scales, Legends, and Guides",
+    "section": "",
+    "text": "This notebook adapts the plotnine guide on scales, legends, and guides to the plotnine_polars style. Where the original page uses pandas for small example tables, this version uses Polars.\nimport polars as pl\nimport plotnine as p9\nimport plotnine_polars\nfrom plotnine import aes\nfrom plotnine_polars import ggplot\nfrom plotnine.data import huron, mpg"
+  },
+  {
+    "objectID": "notebooks/scale-basics.html#setup",
+    "href": "notebooks/scale-basics.html#setup",
+    "title": "Scales, Legends, and Guides",
+    "section": "Setup",
+    "text": "Setup\n\nmpg = pl.from_pandas(mpg)\nhuron = pl.from_pandas(huron)\n\nmpg.head()\n\n\nshape: (5, 11)\n\n\n\nmanufacturer\nmodel\ndispl\nyear\ncyl\ntrans\ndrv\ncty\nhwy\nfl\nclass\n\n\nstr\nstr\nf64\ni64\ni64\nstr\nstr\ni64\ni64\nstr\nstr\n\n\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"auto(l5)\"\n\"f\"\n18\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"manual(m5)\"\n\"f\"\n21\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"manual(m6)\"\n\"f\"\n20\n31\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"auto(av)\"\n\"f\"\n21\n30\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.8\n1999\n6\n\"auto(l5)\"\n\"f\"\n16\n26\n\"p\"\n\"compact\""
+  },
+  {
+    "objectID": "notebooks/scale-basics.html#scale-basics",
+    "href": "notebooks/scale-basics.html#scale-basics",
+    "title": "Scales, Legends, and Guides",
+    "section": "Scale Basics",
+    "text": "Scale Basics\n\nManual Color Mapping\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point()\n    .scale_color_manual(\n        name=\"Car class\",\n        breaks=[\"2seater\", \"compact\"],\n        values=[\"red\", \"blue\"],\n    )\n)\n\n/Users/igow/git/plotnine/plotnine/scales/scale_manual.py:45: PlotnineWarning: The palette of scale_color_manual can return a maximum of 2 values. 7 were requested from it.\n/Users/igow/git/plotnine/plotnine/scales/scale_manual.py:45: PlotnineWarning: The palette of scale_color_manual can return a maximum of 2 values. 7 were requested from it.\n\n\n\n\n\n\n\n\n\n\n\nColorBrewer Palette\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point()\n    .scale_color_brewer(type=\"qual\", palette=2)\n)"
+  },
+  {
+    "objectID": "notebooks/scale-basics.html#varieties-of-scales",
+    "href": "notebooks/scale-basics.html#varieties-of-scales",
+    "title": "Scales, Legends, and Guides",
+    "section": "Varieties of Scales",
+    "text": "Varieties of Scales\n\nDefault Continuous and Discrete Color Scales\n\nbase_plot = mpg.ggplot().aes(\"displ\", \"hwy\").theme_grey(base_size=20)\n\n(\n    base_plot\n    .geom_point(aes(color=\"cyl\"))\n)\n\n\n\n\n\n\n\n\n\n(\n    base_plot\n    .geom_point(aes(color=\"factor(cyl)\"))\n)\n\n\n\n\n\n\n\n\n\n\nPosition Scales\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .scale_x_reverse()\n    .scale_y_log10()\n)\n\n\n\n\n\n\n\n\n\n\nIdentity Scales\n\ndf_identity = pl.DataFrame(\n    {\n        \"x\": [1, 2, 3],\n        \"y\": [1, 2, 3],\n        \"my_color\": [\"red\", \"blue\", \"green\"],\n    }\n)\n\n(\n    df_identity.ggplot()\n    .aes(\"x\", \"y\", color=\"my_color\")\n    .geom_point(size=5)\n    .scale_color_identity()\n)"
+  },
+  {
+    "objectID": "notebooks/scale-basics.html#name-for-guide-labels",
+    "href": "notebooks/scale-basics.html#name-for-guide-labels",
+    "title": "Scales, Legends, and Guides",
+    "section": "name= for Guide Labels",
+    "text": "name= for Guide Labels\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point()\n    .scale_x_continuous(name=\"Engine displacement (litres)\")\n    .scale_y_continuous(name=\"Highway miles per gallon\")\n    .scale_color_discrete(name=\"Car class\")\n)\n\n\n\n\n\n\n\n\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point()\n    .xlab(\"Engine displacement (litres)\")\n    .labs(\n        y=\"Highway miles per gallon\",\n        color=\"Car class\",\n        title=\"Use labs() to quickly set labels\",\n    )\n)"
+  },
+  {
+    "objectID": "notebooks/scale-basics.html#values-for-manual-styles",
+    "href": "notebooks/scale-basics.html#values-for-manual-styles",
+    "title": "Scales, Legends, and Guides",
+    "section": "values= for Manual Styles",
+    "text": "values= for Manual Styles\n\nkeep_classes = [\"2seater\", \"compact\", \"midsize\"]\nfiltered = mpg.filter(pl.col(\"class\").is_in(keep_classes))\n\n(\n    filtered.ggplot()\n    .aes(\"displ\", \"hwy\", shape=\"factor(cyl)\")\n    .geom_point()\n    .scale_shape_manual(values=[\".\", \"o\", \"v\", \"&gt;\"])\n)"
+  },
+  {
+    "objectID": "notebooks/scale-basics.html#breaks-for-axis-ticks",
+    "href": "notebooks/scale-basics.html#breaks-for-axis-ticks",
+    "title": "Scales, Legends, and Guides",
+    "section": "breaks= for Axis Ticks",
+    "text": "breaks= for Axis Ticks\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point()\n    .scale_x_continuous(breaks=[4, 4.5, 5, 5.5])\n)"
+  },
+  {
+    "objectID": "notebooks/scale-basics.html#limits-for-restricting-range",
+    "href": "notebooks/scale-basics.html#limits-for-restricting-range",
+    "title": "Scales, Legends, and Guides",
+    "section": "limits= for Restricting Range",
+    "text": "limits= for Restricting Range\n\nhuron_plot = (\n    huron.ggplot()\n    .aes(\"year\", \"level\")\n    .geom_line()\n    .theme_grey(base_size=26)\n)\n\n(\n    huron_plot\n    .labs(title=\"Default range\")\n)\n\n\n\n\n\n\n\n\n\n(\n    huron_plot\n    .scale_x_continuous(limits=[1950, 1960])\n    .labs(title=\"Zoom in\")\n)\n\n/Users/igow/git/plotnine/plotnine/geoms/geom_path.py:98: PlotnineWarning: geom_line: Removed 87 rows containing missing values.\n\n\n\n\n\n\n\n\n\n\n(\n    huron_plot\n    .scale_x_continuous(limits=[1800, 2000])\n    .labs(title=\"Zoom out\")\n)\n\n\n\n\n\n\n\n\n\n(\n    huron.ggplot()\n    .aes(\"year\", \"level\", color=\"year\")\n    .geom_line()\n)\n\n\n\n\n\n\n\n\n\n(\n    huron.ggplot()\n    .aes(\"year\", \"level\", color=\"year\")\n    .geom_line()\n    .scale_color_continuous(limits=[None, 1900])\n)"
+  },
+  {
+    "objectID": "notebooks/scale-basics.html#labels-for-break-labels",
+    "href": "notebooks/scale-basics.html#labels-for-break-labels",
+    "title": "Scales, Legends, and Guides",
+    "section": "labels= for Break Labels",
+    "text": "labels= for Break Labels\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point()\n    .scale_color_discrete(labels=lambda breaks: [s.upper() for s in breaks])\n)\n\n\n\n\n\n\n\n\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point()\n    .scale_x_continuous(breaks=[2, 4, 6], labels=[\"TWO\", \"FOUR\", \"SIX\"])\n)"
+  },
+  {
+    "objectID": "notebooks/scale-basics.html#legend-merging",
+    "href": "notebooks/scale-basics.html#legend-merging",
+    "title": "Scales, Legends, and Guides",
+    "section": "Legend Merging",
+    "text": "Legend Merging\n\nmerged_legend_plot = (\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"factor(cyl)\", shape=\"factor(cyl)\")\n    .geom_point()\n    .theme_grey(base_size=20)\n)\n\n(\n    merged_legend_plot\n    .labs(title=\"Merged guides\")\n)\n\n\n\n\n\n\n\n\n\n(\n    merged_legend_plot\n    .labs(title=\"Split guides\")\n    .scale_shape_discrete(name=\"Shape\")\n)"
+  },
+  {
+    "objectID": "notebooks/scale-basics.html#legend-position",
+    "href": "notebooks/scale-basics.html#legend-position",
+    "title": "Scales, Legends, and Guides",
+    "section": "Legend Position",
+    "text": "Legend Position\n\nlegend_position_plot = (\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"factor(cyl)\", shape=\"factor(cyl)\")\n    .geom_point()\n)\n\n(\n    legend_position_plot\n    .add_theme(legend_position=\"top\")\n)\n\n\n\n\n\n\n\n\n\n(\n    legend_position_plot\n    .add_theme(legend_position=\"none\")\n)"
+  },
+  {
+    "objectID": "notebooks/scale-basics.html#guide-customization",
+    "href": "notebooks/scale-basics.html#guide-customization",
+    "title": "Scales, Legends, and Guides",
+    "section": "Guide Customization",
+    "text": "Guide Customization\n\nguide_plot = (\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"cyl\")\n    .geom_point()\n    .add_theme(legend_key_size=30)\n)\n\nguide_plot\n\n\n\n\n\n\n\n\n\n(\n    guide_plot\n    .add_guides(color=p9.guide_colorbar(reverse=True))\n)\n\n\n\n\n\n\n\n\n\nguide_df = pl.DataFrame(\n    {\n        \"x\": list(map(str, range(5))),\n        \"y\": list(map(str, range(5))),\n        \"p\": list(map(str, range(5))),\n        \"q\": list(map(str, range(5))),\n        \"r\": list(map(str, range(5))),\n    }\n)\n\n(\n    guide_df.ggplot()\n    .aes(\"x\", \"y\", color=\"p\", size=\"q\", shape=\"r\")\n    .geom_point()\n    .labs(title=\"Merged color, size, and shape guides\")\n    .add_guides(\n        color=p9.guide_legend(\"THE GUIDE\"),\n        size=p9.guide_legend(\"THE GUIDE\"),\n        shape=p9.guide_legend(\"THE GUIDE\"),\n    )\n)\n\n/Users/igow/git/plotnine/plotnine/scales/scale_size.py:46: PlotnineWarning: Using size for a discrete variable is not advised."
+  },
+  {
+    "objectID": "notebooks/geometric-objects.html",
+    "href": "notebooks/geometric-objects.html",
+    "title": "Geometric Objects",
+    "section": "",
+    "text": "This notebook adapts the plotnine guide on geometric objects to the plotnine_polars style. Where the original page uses pandas-based wrangling, this version uses Polars.\nimport polars as pl\nimport plotnine as p9\nimport plotnine_polars\nfrom plotnine import aes\nfrom plotnine_polars import ggplot\nfrom plotnine.data import diamonds, huron, mpg"
+  },
+  {
+    "objectID": "notebooks/geometric-objects.html#setup",
+    "href": "notebooks/geometric-objects.html#setup",
+    "title": "Geometric Objects",
+    "section": "Setup",
+    "text": "Setup\n\nmpg = pl.from_pandas(mpg)\nhuron = pl.from_pandas(huron)\ndiamonds = pl.from_pandas(diamonds)\n\nmpg.head()\n\n\nshape: (5, 11)\n\n\n\nmanufacturer\nmodel\ndispl\nyear\ncyl\ntrans\ndrv\ncty\nhwy\nfl\nclass\n\n\nstr\nstr\nf64\ni64\ni64\nstr\nstr\ni64\ni64\nstr\nstr\n\n\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"auto(l5)\"\n\"f\"\n18\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"manual(m5)\"\n\"f\"\n21\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"manual(m6)\"\n\"f\"\n20\n31\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"auto(av)\"\n\"f\"\n21\n30\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.8\n1999\n6\n\"auto(l5)\"\n\"f\"\n16\n26\n\"p\"\n\"compact\""
+  },
+  {
+    "objectID": "notebooks/geometric-objects.html#basic-use",
+    "href": "notebooks/geometric-objects.html#basic-use",
+    "title": "Geometric Objects",
+    "section": "Basic Use",
+    "text": "Basic Use\nGeom functions determine how mapped data becomes visible marks. Layers are drawn in the order they are added.\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point(aes(fill=\"class\"), size=5)\n    .geom_point(aes(shape=\"class\"))\n)"
+  },
+  {
+    "objectID": "notebooks/geometric-objects.html#individual-geoms",
+    "href": "notebooks/geometric-objects.html#individual-geoms",
+    "title": "Geometric Objects",
+    "section": "Individual Geoms",
+    "text": "Individual Geoms\n\nScatterplot With Text\n\nhighest_mpg = mpg.filter(\n    pl.col(\"hwy\") == pl.col(\"hwy\").max(),\n    pl.col(\"cty\") == pl.col(\"cty\").max(),\n)\n\n(\n    mpg.ggplot()\n    .aes(\"cty\", \"hwy\")\n    .geom_point()\n    .geom_text(\n        aes(label=\"model\"),\n        nudge_y=-2,\n        nudge_x=-1,\n        data=highest_mpg,\n    )\n)\n\n\n\n\n\n\n\n\n\n\nBarchart on Counts\n\ncounts = mpg.group_by(\"class\", \"drv\").len().rename({\"len\": \"count\"})\n\n(\n    counts.ggplot()\n    .aes(\"class\", \"count\", fill=\"drv\")\n    .geom_col()\n)\n\n\n\n\n\n\n\n\n\n\nRectangles\n\nrectangles = pl.DataFrame(\n    {\n        \"xmin\": [1, 2, 3],\n        \"ymin\": [1, 2, 3],\n        \"xmax\": [2, 3, 4],\n        \"ymax\": [2, 3, 4],\n    }\n)\n\n(\n    rectangles.ggplot()\n    .aes(xmin=\"xmin\", ymin=\"ymin\", xmax=\"xmax\", ymax=\"ymax\")\n    .geom_rect(fill=\"orange\")\n)"
+  },
+  {
+    "objectID": "notebooks/geometric-objects.html#collective-geoms-for-distributions",
+    "href": "notebooks/geometric-objects.html#collective-geoms-for-distributions",
+    "title": "Geometric Objects",
+    "section": "Collective Geoms for Distributions",
+    "text": "Collective Geoms for Distributions\n\nBoxplots and Violins\n\nselected_classes = [\"2seater\", \"compact\", \"midsize\"]\nmpg_box = mpg.filter(pl.col(\"class\").is_in(selected_classes))\nmpg_violin = mpg.filter(~pl.col(\"class\").is_in(selected_classes))\n\n(\n    ggplot()\n    .aes(\"class\", \"cty\")\n    .geom_boxplot(data=mpg_box, fill=\"orange\")\n    .geom_violin(data=mpg_violin, fill=\"lightblue\")\n)\n\n/Users/igow/git/plotnine/plotnine/stats/stat.py:320: UserWarning: \nThe following aesthetics were dropped during processing: ['y'].\nplotnine could not infer the correct grouping.\nDid you forget to specify a `group` aesthetic or to convert a numerical variable into a categorial?\n\n\n\n\n\n\n\n\n\n\n\n\nHistograms and Densities\n\n(\n    mpg.ggplot()\n    .aes(\"cty\")\n    .geom_histogram()\n)\n\n/Users/igow/git/plotnine/plotnine/stats/stat_bin.py:111: PlotnineWarning: 'stat_bin()' using 'bins = 17'. Pick better value with 'binwidth'.\n\n\n\n\n\n\n\n\n\n\n(\n    mpg.ggplot()\n    .aes(\"cty\")\n    .geom_density(fill=\"lightblue\")\n)\n\n\n\n\n\n\n\n\n\n\nSmoothing\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .geom_smooth(method=\"lm\", color=\"blue\", fill=\"orange\")\n)"
+  },
+  {
+    "objectID": "notebooks/geometric-objects.html#collective-geoms-for-lines-and-fills",
+    "href": "notebooks/geometric-objects.html#collective-geoms-for-lines-and-fills",
+    "title": "Geometric Objects",
+    "section": "Collective Geoms for Lines and Fills",
+    "text": "Collective Geoms for Lines and Fills\n\n(\n    huron.ggplot()\n    .aes(\"year\", \"level\")\n    .geom_line()\n    .geom_point()\n)\n\n\n\n\n\n\n\n\n\n(\n    huron.ggplot()\n    .aes(\"year\", \"level\")\n    .geom_ribbon(aes(ymax=\"level\"), ymin=0, fill=\"lightblue\")\n    .geom_point()\n)"
+  },
+  {
+    "objectID": "notebooks/geometric-objects.html#position-adjustments",
+    "href": "notebooks/geometric-objects.html#position-adjustments",
+    "title": "Geometric Objects",
+    "section": "Position Adjustments",
+    "text": "Position Adjustments\n\nJitter With Random Noise\n\n(\n    mpg.ggplot()\n    .aes(\"cty\", \"hwy\")\n    .geom_point(alpha=0.2)\n)\n\n\n\n\n\n\n\n\n\n(\n    mpg.ggplot()\n    .aes(\"cty\", \"hwy\")\n    .geom_point(position=p9.position_jitter())\n)\n\n\n\n\n\n\n\n\n\n\nDodge and Fill for Bars\n\n(\n    diamonds.ggplot()\n    .aes(\"color\", fill=\"cut\")\n    .add_theme(legend_position=\"none\")\n    .geom_bar()\n)\n\n\n\n\n\n\n\n\n\n(\n    diamonds.ggplot()\n    .aes(\"color\", fill=\"cut\")\n    .add_theme(legend_position=\"none\")\n    .geom_bar(position=p9.position_fill())\n)\n\n\n\n\n\n\n\n\n\n(\n    diamonds.ggplot()\n    .aes(\"color\", fill=\"cut\")\n    .add_theme(legend_position=\"none\")\n    .geom_bar(position=p9.position_dodge())\n)"
+  },
+  {
+    "objectID": "notebooks/geometric-objects.html#statistical-transformations",
+    "href": "notebooks/geometric-objects.html#statistical-transformations",
+    "title": "Geometric Objects",
+    "section": "Statistical Transformations",
+    "text": "Statistical Transformations\n\n(\n    mpg.ggplot()\n    .aes(\"trans\", \"cty\")\n    .geom_point()\n    .geom_point(\n        aes(group=\"trans\"),\n        color=\"red\",\n        size=3,\n        stat=\"summary\",\n        fun_y=lambda x: x.mean(),\n    )\n)\n\n\n\n\n\n\n\n\n\nmean_mpg = mpg.group_by(\"trans\").agg(pl.col(\"cty\").mean())\nmean_mpg\n\n\nshape: (10, 2)\n\n\n\ntrans\ncty\n\n\nstr\nf64\n\n\n\n\n\"manual(m5)\"\n19.258621\n\n\n\"auto(l5)\"\n14.717949\n\n\n\"auto(l3)\"\n21.0\n\n\n\"auto(s5)\"\n17.333333\n\n\n\"auto(l4)\"\n15.939759\n\n\n\"auto(s6)\"\n17.375\n\n\n\"auto(av)\"\n20.0\n\n\n\"manual(m6)\"\n16.894737\n\n\n\"auto(l6)\"\n13.666667\n\n\n\"auto(s4)\"\n18.666667\n\n\n\n\n\n\n\n(\n    mpg.ggplot()\n    .aes(\"trans\", \"cty\")\n    .geom_point()\n    .geom_point(data=mean_mpg, color=\"red\", size=3)\n)"
+  },
+  {
+    "objectID": "notebooks/bar-plot-with-2-variables.html",
+    "href": "notebooks/bar-plot-with-2-variables.html",
+    "title": "A Bar Plot With 2 Variables",
+    "section": "",
+    "text": "This notebook adapts the plotnine gallery example on grouped bar labels, using Polars for data preparation and plotnine_polars for plotting.\nimport polars as pl\nimport plotnine as p9\nimport plotnine_polars\nfrom plotnine import aes\nVisualizing a variable that contains nested, independent categories on a single plot can get crowded quickly. This example builds the chart up step by step."
+  },
+  {
+    "objectID": "notebooks/bar-plot-with-2-variables.html#create-the-data",
+    "href": "notebooks/bar-plot-with-2-variables.html#create-the-data",
+    "title": "A Bar Plot With 2 Variables",
+    "section": "Create the Data",
+    "text": "Create the Data\n\ndf = pl.DataFrame(\n    {\n        \"variable\": [\n            \"gender\",\n            \"gender\",\n            \"age\",\n            \"age\",\n            \"age\",\n            \"income\",\n            \"income\",\n            \"income\",\n            \"income\",\n        ],\n        \"category\": [\n            \"Female\",\n            \"Male\",\n            \"1-24\",\n            \"25-54\",\n            \"55+\",\n            \"Lo\",\n            \"Lo-Med\",\n            \"Med\",\n            \"High\",\n        ],\n        \"value\": [60, 40, 50, 30, 20, 10, 25, 25, 40],\n    }\n).with_columns(\n    pl.col(\"variable\").cast(pl.Enum([\"gender\", \"age\", \"income\"])),\n    pl.col(\"category\").cast(\n        pl.Enum([\"Female\", \"Male\", \"1-24\", \"25-54\", \"55+\", \"Lo\", \"Lo-Med\", \"Med\", \"High\"])\n    ),\n)\n\ndf\n\n\nshape: (9, 3)\n\n\n\nvariable\ncategory\nvalue\n\n\nenum\nenum\ni64\n\n\n\n\n\"gender\"\n\"Female\"\n60\n\n\n\"gender\"\n\"Male\"\n40\n\n\n\"age\"\n\"1-24\"\n50\n\n\n\"age\"\n\"25-54\"\n30\n\n\n\"age\"\n\"55+\"\n20\n\n\n\"income\"\n\"Lo\"\n10\n\n\n\"income\"\n\"Lo-Med\"\n25\n\n\n\"income\"\n\"Med\"\n25\n\n\n\"income\"\n\"High\"\n40"
+  },
+  {
+    "objectID": "notebooks/bar-plot-with-2-variables.html#start-with-a-simple-bar-chart",
+    "href": "notebooks/bar-plot-with-2-variables.html#start-with-a-simple-bar-chart",
+    "title": "A Bar Plot With 2 Variables",
+    "section": "Start With a Simple Bar Chart",
+    "text": "Start With a Simple Bar Chart\n\n(\n    df.ggplot()\n    .aes(x=\"variable\", y=\"value\", fill=\"category\")\n    .geom_col()\n)"
+  },
+  {
+    "objectID": "notebooks/bar-plot-with-2-variables.html#dodge-the-bars",
+    "href": "notebooks/bar-plot-with-2-variables.html#dodge-the-bars",
+    "title": "A Bar Plot With 2 Variables",
+    "section": "Dodge the Bars",
+    "text": "Dodge the Bars\n\n(\n    df.ggplot()\n    .aes(x=\"variable\", y=\"value\", fill=\"category\")\n    .geom_col(position=\"dodge\")\n)"
+  },
+  {
+    "objectID": "notebooks/bar-plot-with-2-variables.html#label-each-category",
+    "href": "notebooks/bar-plot-with-2-variables.html#label-each-category",
+    "title": "A Bar Plot With 2 Variables",
+    "section": "Label Each Category",
+    "text": "Label Each Category\n\ndodge_text = p9.position_dodge(width=0.9)\n\n(\n    df.ggplot()\n    .aes(x=\"variable\", y=\"value\", fill=\"category\")\n    .geom_col(position=\"dodge\", show_legend=False)\n    .geom_text(\n        aes(y=-0.5, label=\"category\"),\n        position=dodge_text,\n        color=\"gray\",\n        size=8,\n        angle=45,\n        va=\"top\",\n    )\n    .lims(y=(-5, 60))\n)"
+  },
+  {
+    "objectID": "notebooks/bar-plot-with-2-variables.html#add-value-labels",
+    "href": "notebooks/bar-plot-with-2-variables.html#add-value-labels",
+    "title": "A Bar Plot With 2 Variables",
+    "section": "Add Value Labels",
+    "text": "Add Value Labels\n\ndodge_text = p9.position_dodge(width=0.9)\n\n(\n    df.ggplot()\n    .aes(x=\"variable\", y=\"value\", fill=\"category\")\n    .geom_col(position=\"dodge\", show_legend=False)\n    .geom_text(\n        aes(y=-0.5, label=\"category\"),\n        position=dodge_text,\n        color=\"gray\",\n        size=8,\n        angle=45,\n        va=\"top\",\n    )\n    .geom_text(\n        aes(label=\"value\"),\n        position=dodge_text,\n        size=8,\n        va=\"bottom\",\n        format_string=\"{}%\",\n    )\n    .lims(y=(-5, 60))\n)"
+  },
+  {
+    "objectID": "notebooks/bar-plot-with-2-variables.html#final-polish",
+    "href": "notebooks/bar-plot-with-2-variables.html#final-polish",
+    "title": "A Bar Plot With 2 Variables",
+    "section": "Final Polish",
+    "text": "Final Polish\n\ndodge_text = p9.position_dodge(width=0.9)\nccolor = \"#555555\"\n\n(\n    df.ggplot()\n    .aes(x=\"variable\", y=\"value\", fill=\"category\")\n    .geom_col(position=\"dodge\", show_legend=False)\n    .geom_text(\n        aes(y=-0.5, label=\"category\"),\n        position=dodge_text,\n        color=ccolor,\n        size=8,\n        angle=45,\n        va=\"top\",\n    )\n    .geom_text(\n        aes(label=\"value\"),\n        position=dodge_text,\n        size=8,\n        va=\"bottom\",\n        format_string=\"{}%\",\n    )\n    .lims(y=(-5, 60))\n    .add_theme(\n        panel_background=p9.element_rect(fill=\"white\"),\n        axis_title_y=p9.element_blank(),\n        axis_line_x=p9.element_line(color=\"black\"),\n        axis_line_y=p9.element_blank(),\n        axis_text_y=p9.element_blank(),\n        axis_text_x=p9.element_text(color=ccolor),\n        axis_ticks_major_y=p9.element_blank(),\n        panel_grid=p9.element_blank(),\n        panel_border=p9.element_blank(),\n    )\n)"
+  },
+  {
+    "objectID": "notebooks/aesthetic-mappings.html",
+    "href": "notebooks/aesthetic-mappings.html",
+    "title": "Aesthetic Mappings",
+    "section": "",
+    "text": "This notebook adapts the plotnine guide on aesthetic mappings to the plotnine_polars style.\nimport polars as pl\nimport plotnine_polars\nfrom plotnine import aes\nfrom plotnine.data import penguins"
+  },
+  {
+    "objectID": "notebooks/aesthetic-mappings.html#setup",
+    "href": "notebooks/aesthetic-mappings.html#setup",
+    "title": "Aesthetic Mappings",
+    "section": "Setup",
+    "text": "Setup\n\npenguins = pl.from_pandas(penguins)\npenguins.head()\n\n\nshape: (5, 8)\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\nyear\n\n\ncat\ncat\nf64\nf64\nf64\nf64\ncat\ni64\n\n\n\n\n\"Adelie\"\n\"Torgersen\"\n39.1\n18.7\n181.0\n3750.0\n\"male\"\n2007\n\n\n\"Adelie\"\n\"Torgersen\"\n39.5\n17.4\n186.0\n3800.0\n\"female\"\n2007\n\n\n\"Adelie\"\n\"Torgersen\"\n40.3\n18.0\n195.0\n3250.0\n\"female\"\n2007\n\n\n\"Adelie\"\n\"Torgersen\"\nnull\nnull\nnull\nnull\nnull\n2007\n\n\n\"Adelie\"\n\"Torgersen\"\n36.7\n19.3\n193.0\n3450.0\n\"female\"\n2007"
+  },
+  {
+    "objectID": "notebooks/aesthetic-mappings.html#basics",
+    "href": "notebooks/aesthetic-mappings.html#basics",
+    "title": "Aesthetic Mappings",
+    "section": "Basics",
+    "text": "Basics\nThe simplest mapping sends columns to the x- and y-axes at the plot level.\n\n(\n    penguins.ggplot()\n    .aes(x=\"flipper_length_mm\", y=\"body_mass_g\")\n    .geom_point()\n)\n\n/Users/igow/git/plotnine/plotnine/layer.py:419: PlotnineWarning: geom_point : Removed 2 rows containing missing values."
+  },
+  {
+    "objectID": "notebooks/aesthetic-mappings.html#variable-mappings",
+    "href": "notebooks/aesthetic-mappings.html#variable-mappings",
+    "title": "Aesthetic Mappings",
+    "section": "Variable Mappings",
+    "text": "Variable Mappings\n\nColor\n\n(\n    penguins.ggplot()\n    .aes(x=\"flipper_length_mm\", y=\"body_mass_g\", color=\"species\")\n    .geom_point()\n)\n\n/Users/igow/git/plotnine/plotnine/layer.py:419: PlotnineWarning: geom_point : Removed 2 rows containing missing values.\n\n\n\n\n\n\n\n\n\n\n\nShape\n\n(\n    penguins.ggplot()\n    .aes(x=\"flipper_length_mm\", y=\"body_mass_g\", shape=\"species\")\n    .geom_point()\n)\n\n/Users/igow/git/plotnine/plotnine/layer.py:419: PlotnineWarning: geom_point : Removed 2 rows containing missing values.\n\n\n\n\n\n\n\n\n\n\n\nSize and Alpha\n\n(\n    penguins.ggplot()\n    .aes(\n        x=\"flipper_length_mm\",\n        y=\"body_mass_g\",\n        size=\"body_mass_g\",\n        alpha=\"body_mass_g\",\n    )\n    .geom_point()\n)\n\n/Users/igow/git/plotnine/plotnine/layer.py:419: PlotnineWarning: geom_point : Removed 2 rows containing missing values."
+  },
+  {
+    "objectID": "notebooks/aesthetic-mappings.html#literal-mappings",
+    "href": "notebooks/aesthetic-mappings.html#literal-mappings",
+    "title": "Aesthetic Mappings",
+    "section": "Literal Mappings",
+    "text": "Literal Mappings\nLiteral values are set directly on the geom, not inside aes().\n\n(\n    penguins.ggplot()\n    .aes(x=\"flipper_length_mm\", y=\"body_mass_g\")\n    .geom_point(size=7, alpha=0.5, color=\"purple\")\n)\n\n/Users/igow/git/plotnine/plotnine/layer.py:419: PlotnineWarning: geom_point : Removed 2 rows containing missing values."
+  },
+  {
+    "objectID": "notebooks/aesthetic-mappings.html#aes-inside-a-specific-geom",
+    "href": "notebooks/aesthetic-mappings.html#aes-inside-a-specific-geom",
+    "title": "Aesthetic Mappings",
+    "section": "aes() Inside a Specific Geom",
+    "text": "aes() Inside a Specific Geom\nLayer-local mappings apply to only that geom.\n\n(\n    penguins.ggplot()\n    .aes(x=\"flipper_length_mm\", y=\"body_mass_g\")\n    .geom_point(aes(color=\"species\"), size=5)\n    .geom_point(aes(shape=\"species\"))\n)\n\n/Users/igow/git/plotnine/plotnine/layer.py:419: PlotnineWarning: geom_point : Removed 2 rows containing missing values.\n/Users/igow/git/plotnine/plotnine/layer.py:419: PlotnineWarning: geom_point : Removed 2 rows containing missing values."
+  },
+  {
+    "objectID": "notebooks/aesthetic-mappings.html#collective-groupings",
+    "href": "notebooks/aesthetic-mappings.html#collective-groupings",
+    "title": "Aesthetic Mappings",
+    "section": "Collective Groupings",
+    "text": "Collective Groupings\n\nExplicit Grouping\n\n(\n    penguins.ggplot()\n    .aes(x=\"flipper_length_mm\", y=\"body_mass_g\", group=\"species\")\n    .geom_point()\n    .geom_smooth(method=\"lm\")\n)\n\n/Users/igow/git/plotnine/plotnine/layer.py:419: PlotnineWarning: geom_point : Removed 2 rows containing missing values.\n\n\n\n\n\n\n\n\n\n\n\nAutomatic Grouping Through Color\n\n(\n    penguins.ggplot()\n    .aes(x=\"flipper_length_mm\", y=\"body_mass_g\", color=\"species\")\n    .geom_point()\n    .geom_smooth(method=\"lm\")\n)\n\n/Users/igow/git/plotnine/plotnine/layer.py:419: PlotnineWarning: geom_point : Removed 2 rows containing missing values.\n\n\n\n\n\n\n\n\n\n\n\nWorking Around Automatic Grouping\n\n(\n    penguins.ggplot()\n    .aes(x=\"flipper_length_mm\", y=\"body_mass_g\")\n    .geom_point(aes(color=\"species\"))\n    .geom_smooth(method=\"lm\")\n)\n\n/Users/igow/git/plotnine/plotnine/layer.py:419: PlotnineWarning: geom_point : Removed 2 rows containing missing values."
+  },
+  {
+    "objectID": "notebooks/aesthetic-mappings.html#mappings-with-expressions",
+    "href": "notebooks/aesthetic-mappings.html#mappings-with-expressions",
+    "title": "Aesthetic Mappings",
+    "section": "Mappings With Expressions",
+    "text": "Mappings With Expressions\nMappings in aes() can also be expressions.\n\n(\n    penguins.ggplot()\n    .aes(x=\"bill_length_mm / bill_depth_mm\", y=\"body_mass_g\")\n    .geom_point(aes(color=\"species\"))\n)\n\n/Users/igow/git/plotnine/plotnine/layer.py:419: PlotnineWarning: geom_point : Removed 2 rows containing missing values."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "plotnine-polars",
+    "section": "",
+    "text": "This site adapts the examples from plot-nine-fluid to the plotnine_polars package.\nThe focus here is slightly different from the original site:\n\nexamples use Polars data frames directly\nplots are built with df.ggplot() where that reads naturally\nthe fluent API comes from plotnine_polars, not from a fork of plotnine\n\nImporting plotnine_polars registers the Polars dataframe namespace:\n\nimport polars as pl\nimport plotnine_polars\n\ndf = pl.DataFrame({\"x\": [1, 2, 3], \"y\": [3, 2, 1]})\n\n(\n    df.ggplot()\n    .aes(\"x\", \"y\")\n    .geom_point()\n    .geom_line()\n)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRecreates Anscombe’s classic quartet with plotnine_polars, polars, and scikit-learn, including faceted regression lines and a polished final chart.\n\n\n\n\nShows how to add titles, subtitles, captions, and legend labels with plotnine_polars.\n\n\n\n\n\n\n\nBuilds a grouped bar chart step by step, using Polars for the data and layer-specific label mappings for the dodged text annotations.\n\n\n\n\nDemonstrates facet_wrap(), facet_grid(), formula syntax, and free scales in a compact subplot-focused notebook.\n\n\n\n\n\n\n\n\n\n\nCondenses the plotnine geoms guide into a notebook covering points, bars, rectangles, lines, ribbons, distributions, position adjustments, and summaries.\n\n\n\n\nFocuses on global versus layer-local aes(), literal settings, grouping, and expression-based mappings.\n\n\n\n\n\n\n\nCovers manual scales, breaks, labels, limits, legend merging, guide placement, and guide customization in the plotnine_polars style.\n\n\n\n\nMost notebooks on this site are adapted from the official plotnine gallery and plotnine guides, using the original plot-nine-fluid site as the starting point for the fluent API structure."
+  },
+  {
+    "objectID": "index.html#gallery-adaptations",
+    "href": "index.html#gallery-adaptations",
+    "title": "plotnine-polars",
+    "section": "",
+    "text": "Recreates Anscombe’s classic quartet with plotnine_polars, polars, and scikit-learn, including faceted regression lines and a polished final chart.\n\n\n\n\nShows how to add titles, subtitles, captions, and legend labels with plotnine_polars.\n\n\n\n\n\n\n\nBuilds a grouped bar chart step by step, using Polars for the data and layer-specific label mappings for the dodged text annotations.\n\n\n\n\nDemonstrates facet_wrap(), facet_grid(), formula syntax, and free scales in a compact subplot-focused notebook."
+  },
+  {
+    "objectID": "index.html#guide-adaptations",
+    "href": "index.html#guide-adaptations",
+    "title": "plotnine-polars",
+    "section": "",
+    "text": "Condenses the plotnine geoms guide into a notebook covering points, bars, rectangles, lines, ribbons, distributions, position adjustments, and summaries.\n\n\n\n\nFocuses on global versus layer-local aes(), literal settings, grouping, and expression-based mappings.\n\n\n\n\n\n\n\nCovers manual scales, breaks, labels, limits, legend merging, guide placement, and guide customization in the plotnine_polars style.\n\n\n\n\nMost notebooks on this site are adapted from the official plotnine gallery and plotnine guides, using the original plot-nine-fluid site as the starting point for the fluent API structure."
+  },
+  {
+    "objectID": "notebooks/anscombes-quartet.html",
+    "href": "notebooks/anscombes-quartet.html",
+    "title": "Anscombe’s Quartet",
+    "section": "",
+    "text": "In 1973, Francis Anscombe introduced four small datasets with nearly identical summary statistics but very different shapes. This notebook recreates that idea with plotnine_polars, polars, and scikit-learn.\nimport polars as pl\nimport plotnine_polars\nfrom plotnine import element_blank, element_line, element_rect, element_text\nfrom plotnine.data import anscombe_quartet"
+  },
+  {
+    "objectID": "notebooks/anscombes-quartet.html#convert-dataframe-to-polars",
+    "href": "notebooks/anscombes-quartet.html#convert-dataframe-to-polars",
+    "title": "Anscombe’s Quartet",
+    "section": "Convert DataFrame to Polars",
+    "text": "Convert DataFrame to Polars\n\nanscombe_quartet = pl.from_pandas(anscombe_quartet)\nanscombe_quartet\n\n\nshape: (44, 3)\n\n\n\ndataset\nx\ny\n\n\nstr\ni64\nf64\n\n\n\n\n\"I\"\n10\n8.04\n\n\n\"I\"\n8\n6.95\n\n\n\"I\"\n13\n7.58\n\n\n\"I\"\n9\n8.81\n\n\n\"I\"\n11\n8.33\n\n\n…\n…\n…\n\n\n\"IV\"\n8\n5.25\n\n\n\"IV\"\n19\n12.5\n\n\n\"IV\"\n8\n5.56\n\n\n\"IV\"\n8\n7.91\n\n\n\"IV\"\n8\n6.89"
+  },
+  {
+    "objectID": "notebooks/anscombes-quartet.html#compute-descriptive-statistics",
+    "href": "notebooks/anscombes-quartet.html#compute-descriptive-statistics",
+    "title": "Anscombe’s Quartet",
+    "section": "Compute Descriptive Statistics",
+    "text": "Compute Descriptive Statistics\n\npl.Config.set_float_precision(2)\n\nanscombe_quartet.group_by(\"dataset\", maintain_order=True).agg(\n    pl.col(\"x\", \"y\").mean().name.prefix(\"mean_\"),\n    pl.col(\"x\", \"y\").var().name.prefix(\"variance_\"),\n    pl.corr(\"x\", \"y\").alias(\"correlation_xy\"),\n)\n\n\nshape: (4, 6)\n\n\n\ndataset\nmean_x\nmean_y\nvariance_x\nvariance_y\ncorrelation_xy\n\n\nstr\nf64\nf64\nf64\nf64\nf64\n\n\n\n\n\"I\"\n9.00\n7.50\n11.00\n4.13\n0.82\n\n\n\"II\"\n9.00\n7.50\n11.00\n4.13\n0.82\n\n\n\"III\"\n9.00\n7.50\n11.00\n4.12\n0.82\n\n\n\"IV\"\n9.00\n7.50\n11.00\n4.12\n0.82"
+  },
+  {
+    "objectID": "notebooks/anscombes-quartet.html#exploratory-data-visualization",
+    "href": "notebooks/anscombes-quartet.html#exploratory-data-visualization",
+    "title": "Anscombe’s Quartet",
+    "section": "Exploratory Data Visualization",
+    "text": "Exploratory Data Visualization\n\n(\n    anscombe_quartet.ggplot()\n    .aes(\"x\", \"y\")\n    .geom_point()\n)\n\n\n\n\n\n\n\n\n\n(\n    anscombe_quartet.ggplot()\n    .aes(\"x\", \"y\", color=\"dataset\")\n    .geom_point()\n)\n\n\n\n\n\n\n\n\n\n(\n    anscombe_quartet.ggplot()\n    .aes(\"x\", \"y\", color=\"dataset\")\n    .facet_wrap(\"dataset\")\n    .geom_point()\n)\n\n\n\n\n\n\n\n\n\n(\n    anscombe_quartet.ggplot()\n    .aes(\"x\", \"y\")\n    .geom_point()\n    .geom_smooth(method=\"lm\", se=False, fullrange=True, color=\"blue\")\n    .facet_wrap(\"dataset\")\n)"
+  },
+  {
+    "objectID": "notebooks/anscombes-quartet.html#a-fine-tuned-data-visualization",
+    "href": "notebooks/anscombes-quartet.html#a-fine-tuned-data-visualization",
+    "title": "Anscombe’s Quartet",
+    "section": "A Fine-Tuned Data Visualization",
+    "text": "A Fine-Tuned Data Visualization\n\n(\n    anscombe_quartet.ggplot()\n    .aes(\"x\", \"y\")\n    .geom_point(color=\"sienna\", fill=\"darkorange\", size=3)\n    .geom_smooth(method=\"lm\", se=False, fullrange=True, color=\"steelblue\", size=1)\n    .facet_wrap(\"dataset\")\n    .scale_y_continuous(breaks=(4, 8, 12))\n    .coord_fixed(xlim=(3, 22), ylim=(2, 14))\n    .labs(title=\"Anscombe's Quartet\")\n    .theme_tufte(base_family=\"Futura\")\n    .add_theme(\n        axis_line=element_line(color=\"#4d4d4d\"),\n        axis_ticks_major=element_line(color=\"#00000000\"),\n        axis_title=element_blank(),\n        plot_background=element_rect(fill=\"#ffffff\", color=\"#ffffff\"),\n        dpi=144,\n        panel_spacing=0.09,\n        strip_text=element_text(size=12),\n        title=element_text(size=16, margin={\"b\": 20}),\n    )\n)"
+  },
+  {
+    "objectID": "notebooks/anscombes-quartet.html#bonus-apply-linear-regression",
+    "href": "notebooks/anscombes-quartet.html#bonus-apply-linear-regression",
+    "title": "Anscombe’s Quartet",
+    "section": "Bonus: Apply Linear Regression",
+    "text": "Bonus: Apply Linear Regression\n\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.metrics import r2_score\n\n\ndef fit_lr(s):\n    lr = LinearRegression()\n    X = s.struct.field(\"x\").to_numpy().reshape(-1, 1)\n    y = s.struct.field(\"y\").to_numpy()\n\n    lr.fit(X, y)\n    intercept = lr.intercept_\n    slope = lr.coef_[0]\n    r2 = r2_score(y, intercept + slope * X)\n\n    return {\"intercept\": intercept, \"slope\": slope, \"r2\": r2}\n\n\n(\n    anscombe_quartet\n    .group_by(\"dataset\", maintain_order=True)\n    .agg(\n        pl.col(\"x\", \"y\").mean().name.prefix(\"mean_\"),\n        pl.col(\"x\", \"y\").var().name.prefix(\"variance_\"),\n        pl.corr(\"x\", \"y\").alias(\"correlation_xy\"),\n        (\n            pl.struct(\"x\", \"y\")\n            .implode()\n            .map_elements(\n                fit_lr,\n                return_dtype=pl.Struct(\n                    {\"intercept\": pl.Float64, \"slope\": pl.Float64, \"r2\": pl.Float64}\n                ),\n            )\n            .alias(\"lr\")\n        ),\n    )\n    .unnest(\"lr\")\n)\n\n\nshape: (4, 9)\n\n\n\ndataset\nmean_x\nmean_y\nvariance_x\nvariance_y\ncorrelation_xy\nintercept\nslope\nr2\n\n\nstr\nf64\nf64\nf64\nf64\nf64\nf64\nf64\nf64\n\n\n\n\n\"I\"\n9.00\n7.50\n11.00\n4.13\n0.82\n3.00\n0.50\n0.67\n\n\n\"II\"\n9.00\n7.50\n11.00\n4.13\n0.82\n3.00\n0.50\n0.67\n\n\n\"III\"\n9.00\n7.50\n11.00\n4.12\n0.82\n3.00\n0.50\n0.67\n\n\n\"IV\"\n9.00\n7.50\n11.00\n4.12\n0.82\n3.00\n0.50\n0.67"
+  },
+  {
+    "objectID": "notebooks/facets.html",
+    "href": "notebooks/facets.html",
+    "title": "Facets (Subplots)",
+    "section": "",
+    "text": "This notebook adapts the plotnine guide on facets to the plotnine_polars style.\nimport polars as pl\nimport plotnine_polars\nfrom plotnine.data import mpg"
+  },
+  {
+    "objectID": "notebooks/facets.html#setup",
+    "href": "notebooks/facets.html#setup",
+    "title": "Facets (Subplots)",
+    "section": "Setup",
+    "text": "Setup\n\nmpg = pl.from_pandas(mpg)\nmpg.head()\n\n\nshape: (5, 11)\n\n\n\nmanufacturer\nmodel\ndispl\nyear\ncyl\ntrans\ndrv\ncty\nhwy\nfl\nclass\n\n\nstr\nstr\nf64\ni64\ni64\nstr\nstr\ni64\ni64\nstr\nstr\n\n\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"auto(l5)\"\n\"f\"\n18\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"manual(m5)\"\n\"f\"\n21\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"manual(m6)\"\n\"f\"\n20\n31\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"auto(av)\"\n\"f\"\n21\n30\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.8\n1999\n6\n\"auto(l5)\"\n\"f\"\n16\n26\n\"p\"\n\"compact\"\n\n\n\n\n\n\nHere is a single large plot that we can split into subplots.\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point()\n)"
+  },
+  {
+    "objectID": "notebooks/facets.html#facet_wrap-subplot-sequence",
+    "href": "notebooks/facets.html#facet_wrap-subplot-sequence",
+    "title": "Facets (Subplots)",
+    "section": "facet_wrap(): Subplot Sequence",
+    "text": "facet_wrap(): Subplot Sequence\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point(show_legend=False)\n    .facet_wrap(\"class\")\n)\n\n\n\n\n\n\n\n\nUse ncol= or nrow= to control the layout.\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point(show_legend=False)\n    .facet_wrap(\"class\", ncol=2)\n)"
+  },
+  {
+    "objectID": "notebooks/facets.html#facet_grid-subplot-matrix",
+    "href": "notebooks/facets.html#facet_grid-subplot-matrix",
+    "title": "Facets (Subplots)",
+    "section": "facet_grid(): Subplot Matrix",
+    "text": "facet_grid(): Subplot Matrix\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .facet_grid(\"cyl\", \"year\")\n)"
+  },
+  {
+    "objectID": "notebooks/facets.html#facetting-formula-syntax",
+    "href": "notebooks/facets.html#facetting-formula-syntax",
+    "title": "Facets (Subplots)",
+    "section": "Facetting Formula Syntax",
+    "text": "Facetting Formula Syntax\nBoth facet_wrap() and facet_grid() support a formula-like syntax.\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .facet_grid(\"cyl ~ year\")\n)"
+  },
+  {
+    "objectID": "notebooks/facets.html#scales-for-freeing-axes",
+    "href": "notebooks/facets.html#scales-for-freeing-axes",
+    "title": "Facets (Subplots)",
+    "section": "scales= for Freeing Axes",
+    "text": "scales= for Freeing Axes\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .facet_grid(\"cyl ~ year\", scales=\"free_y\")\n)"
+  },
+  {
+    "objectID": "notebooks/please-i-want-some-more-labels.html",
+    "href": "notebooks/please-i-want-some-more-labels.html",
+    "title": "Please, I Want Some More Labels",
+    "section": "",
+    "text": "This notebook adapts the plotnine gallery example on layered chart labels to plotnine_polars.\nimport polars as pl\nimport plotnine_polars\nfrom plotnine import element_text\nfrom plotnine.data import mtcars"
+  },
+  {
+    "objectID": "notebooks/please-i-want-some-more-labels.html#the-data",
+    "href": "notebooks/please-i-want-some-more-labels.html#the-data",
+    "title": "Please, I Want Some More Labels",
+    "section": "The Data",
+    "text": "The Data\n\nmtcars = pl.from_pandas(mtcars)\nmtcars.head()\n\n\nshape: (5, 12)\n\n\n\nname\nmpg\ncyl\ndisp\nhp\ndrat\nwt\nqsec\nvs\nam\ngear\ncarb\n\n\nstr\nf64\ni64\nf64\ni64\nf64\nf64\nf64\ni64\ni64\ni64\ni64\n\n\n\n\n\"Mazda RX4\"\n21.0\n6\n160.0\n110\n3.9\n2.62\n16.46\n0\n1\n4\n4\n\n\n\"Mazda RX4 Wag\"\n21.0\n6\n160.0\n110\n3.9\n2.875\n17.02\n0\n1\n4\n4\n\n\n\"Datsun 710\"\n22.8\n4\n108.0\n93\n3.85\n2.32\n18.61\n1\n1\n4\n1\n\n\n\"Hornet 4 Drive\"\n21.4\n6\n258.0\n110\n3.08\n3.215\n19.44\n1\n0\n3\n1\n\n\n\"Hornet Sportabout\"\n18.7\n8\n360.0\n175\n3.15\n3.44\n17.02\n0\n0\n3\n2"
+  },
+  {
+    "objectID": "notebooks/please-i-want-some-more-labels.html#build-the-caption",
+    "href": "notebooks/please-i-want-some-more-labels.html#build-the-caption",
+    "title": "Please, I Want Some More Labels",
+    "section": "Build the Caption",
+    "text": "Build the Caption\n\ncaption = \"\"\"\\\nThis graphic illustrates the inverse relationship between vehicle weight\nand fuel efficiency (MPG). It aims to highlight how heavier vehicles generally\nconsume more fuel, and how the complexity of an engine's cylinder count and\ntransmission system can affect its fuel economy.\n\"\"\"\n\ncaption\n\n\"This graphic illustrates the inverse relationship between vehicle weight\\nand fuel efficiency (MPG). It aims to highlight how heavier vehicles generally\\nconsume more fuel, and how the complexity of an engine's cylinder count and\\ntransmission system can affect its fuel economy.\\n\""
+  },
+  {
+    "objectID": "notebooks/please-i-want-some-more-labels.html#add-more-labels",
+    "href": "notebooks/please-i-want-some-more-labels.html#add-more-labels",
+    "title": "Please, I Want Some More Labels",
+    "section": "Add More Labels",
+    "text": "Add More Labels\n\n(\n    mtcars.ggplot()\n    .aes(\"mpg\", \"wt\", colour=\"factor(cyl)\", size=\"gear\")\n    .geom_point()\n    .xlab(\"Miles per Gallon\")\n    .labs(\n        y=\"Weight\",\n        colour=\"Cylinders\",\n        size=\"Gears\",\n        title=\"Fuel Efficiency vs. Vehicle Weight\",\n        subtitle=\"Exploring Factors that Affect the Fuel Efficiency of a Car\",\n        caption=caption,\n    )\n    .theme_538()\n    .add_theme(\n        plot_caption=element_text(\n            ha=\"left\",\n            margin={\"t\": 1, \"units\": \"lines\"},\n            linespacing=1.25,\n        )\n    )\n)"
+  }
+]
