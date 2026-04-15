@@ -84,60 +84,67 @@
     "text": "Guide Customization\n\nguide_plot = (\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"cyl\")\n    .geom_point()\n    .add_theme(legend_key_size=30)\n)\n\nguide_plot\n\n\n\n\n\n\n\n\n\n(\n    guide_plot\n    .add_guides(color=p9.guide_colorbar(reverse=True))\n)\n\n\n\n\n\n\n\n\n\nguide_df = pl.DataFrame(\n    {\n        \"x\": list(map(str, range(5))),\n        \"y\": list(map(str, range(5))),\n        \"p\": list(map(str, range(5))),\n        \"q\": list(map(str, range(5))),\n        \"r\": list(map(str, range(5))),\n    }\n)\n\n(\n    guide_df.ggplot()\n    .aes(\"x\", \"y\", color=\"p\", size=\"q\", shape=\"r\")\n    .geom_point()\n    .labs(title=\"Merged color, size, and shape guides\")\n    .add_guides(\n        color=p9.guide_legend(\"THE GUIDE\"),\n        size=p9.guide_legend(\"THE GUIDE\"),\n        shape=p9.guide_legend(\"THE GUIDE\"),\n    )\n)\n\n/Users/igow/git/plotnine/plotnine/scales/scale_size.py:46: PlotnineWarning: Using size for a discrete variable is not advised."
   },
   {
-    "objectID": "notebooks/geometric-objects.html",
-    "href": "notebooks/geometric-objects.html",
-    "title": "Geometric Objects",
+    "objectID": "notebooks/nyc-neighborhoods-and-stations.html",
+    "href": "notebooks/nyc-neighborhoods-and-stations.html",
+    "title": "NYC Neighborhoods and Citi Bike Stations",
     "section": "",
-    "text": "This notebook adapts the plotnine guide on geometric objects to the plotnine_polars style. Where the original page uses pandas-based wrangling, this version uses Polars.\nimport polars as pl\nimport plotnine as p9\nimport plotnine_polars\nfrom plotnine import aes\nfrom plotnine_polars import ggplot\nfrom plotnine.data import diamonds, huron, mpg"
+    "text": "This page recreates the chapter 1 map of New York City neighborhoods and Citi Bike stations with plotnine_polars.\nTo keep the example focused on plotting, it uses compact parquet files for the polygon coordinates and station locations.\nimport polars as pl\nimport plotnine_polars\nfrom plotnine import aes, element_rect, element_text"
   },
   {
-    "objectID": "notebooks/geometric-objects.html#setup",
-    "href": "notebooks/geometric-objects.html#setup",
-    "title": "Geometric Objects",
+    "objectID": "notebooks/nyc-neighborhoods-and-stations.html#read-the-data",
+    "href": "notebooks/nyc-neighborhoods-and-stations.html#read-the-data",
+    "title": "NYC Neighborhoods and Citi Bike Stations",
+    "section": "Read the data",
+    "text": "Read the data\n\nneighborhoods_coords = pl.read_parquet(\"../data/nyc-neighborhoods-coords.parquet\")\nstations = pl.read_parquet(\"../data/citi-bike-stations.parquet\")\n\nprint(neighborhoods_coords.head())\nprint(stations.head())\n\nshape: (5, 5)\n┌─────┬──────────────┬─────────┬────────────┬───────────┐\n│ id  ┆ neighborhood ┆ borough ┆ lon        ┆ lat       │\n│ --- ┆ ---          ┆ ---     ┆ ---        ┆ ---       │\n│ u32 ┆ str          ┆ str     ┆ f64        ┆ f64       │\n╞═════╪══════════════╪═════════╪════════════╪═══════════╡\n│ 0   ┆ Allerton     ┆ Bronx   ┆ -73.848597 ┆ 40.87167  │\n│ 0   ┆ Allerton     ┆ Bronx   ┆ -73.845823 ┆ 40.870239 │\n│ 0   ┆ Allerton     ┆ Bronx   ┆ -73.854559 ┆ 40.859954 │\n│ 0   ┆ Allerton     ┆ Bronx   ┆ -73.854665 ┆ 40.859586 │\n│ 0   ┆ Allerton     ┆ Bronx   ┆ -73.856389 ┆ 40.857594 │\n└─────┴──────────────┴─────────┴────────────┴───────────┘\nshape: (5, 3)\n┌──────────────────┬────────────┬───────────┐\n│ station          ┆ lon        ┆ lat       │\n│ ---              ┆ ---        ┆ ---       │\n│ str              ┆ f64        ┆ f64       │\n╞══════════════════╪════════════╪═══════════╡\n│ 1 Ave & E 110 St ┆ -73.938205 ┆ 40.792327 │\n│ 1 Ave & E 16 St  ┆ -73.981656 ┆ 40.732219 │\n│ 1 Ave & E 18 St  ┆ -73.980544 ┆ 40.733876 │\n│ 1 Ave & E 30 St  ┆ -73.975361 ┆ 40.741457 │\n│ 1 Ave & E 38 St  ┆ -73.971822 ┆ 40.746202 │\n└──────────────────┴────────────┴───────────┘"
+  },
+  {
+    "objectID": "notebooks/nyc-neighborhoods-and-stations.html#plot",
+    "href": "notebooks/nyc-neighborhoods-and-stations.html#plot",
+    "title": "NYC Neighborhoods and Citi Bike Stations",
+    "section": "Plot",
+    "text": "Plot\n\n(\n    neighborhoods_coords.ggplot()\n    .aes(x=\"lon\", y=\"lat\", group=\"id\")\n    .geom_polygon(aes(alpha=\"neighborhood\", fill=\"borough\"), color=\"white\")\n    .geom_point(data=stations, size=0.1)\n    .scale_x_continuous(expand=(0, 0))\n    .scale_y_continuous(expand=(0, 0, 0, 0.01))\n    .scale_alpha_ordinal(range=(0.3, 1))\n    .scale_fill_brewer(type=\"qual\", palette=2)\n    .add_guides(alpha=False)\n    .labs(\n        title=\"New York City neighborhoods and Citi Bike stations\",\n        subtitle=\"2,131 stations across 106 neighborhoods\",\n        caption=\"Source: Citi Bike system data and NYC neighborhood boundaries\",\n        fill=\"Borough\",\n    )\n    .theme_void(base_size=14)\n    .add_theme(\n        dpi=300,\n        plot_background=element_rect(fill=\"white\", color=\"white\"),\n        plot_caption=element_text(style=\"italic\"),\n        plot_margin=0.01,\n        plot_title=element_text(ha=\"left\"),\n    )\n)"
+  },
+  {
+    "objectID": "notebooks/facets.html",
+    "href": "notebooks/facets.html",
+    "title": "Facets (Subplots)",
+    "section": "",
+    "text": "This notebook adapts the plotnine guide on facets to the plotnine_polars style.\nimport polars as pl\nimport plotnine_polars\nfrom plotnine.data import mpg"
+  },
+  {
+    "objectID": "notebooks/facets.html#setup",
+    "href": "notebooks/facets.html#setup",
+    "title": "Facets (Subplots)",
     "section": "Setup",
-    "text": "Setup\n\nmpg = pl.from_pandas(mpg)\nhuron = pl.from_pandas(huron)\ndiamonds = pl.from_pandas(diamonds)\n\nmpg.head()\n\n\nshape: (5, 11)\n\n\n\nmanufacturer\nmodel\ndispl\nyear\ncyl\ntrans\ndrv\ncty\nhwy\nfl\nclass\n\n\nstr\nstr\nf64\ni64\ni64\nstr\nstr\ni64\ni64\nstr\nstr\n\n\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"auto(l5)\"\n\"f\"\n18\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"manual(m5)\"\n\"f\"\n21\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"manual(m6)\"\n\"f\"\n20\n31\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"auto(av)\"\n\"f\"\n21\n30\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.8\n1999\n6\n\"auto(l5)\"\n\"f\"\n16\n26\n\"p\"\n\"compact\""
+    "text": "Setup\n\nmpg = pl.from_pandas(mpg)\nmpg.head()\n\n\nshape: (5, 11)\n\n\n\nmanufacturer\nmodel\ndispl\nyear\ncyl\ntrans\ndrv\ncty\nhwy\nfl\nclass\n\n\nstr\nstr\nf64\ni64\ni64\nstr\nstr\ni64\ni64\nstr\nstr\n\n\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"auto(l5)\"\n\"f\"\n18\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"manual(m5)\"\n\"f\"\n21\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"manual(m6)\"\n\"f\"\n20\n31\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"auto(av)\"\n\"f\"\n21\n30\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.8\n1999\n6\n\"auto(l5)\"\n\"f\"\n16\n26\n\"p\"\n\"compact\"\n\n\n\n\n\n\nHere is a single large plot that we can split into subplots.\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point()\n)"
   },
   {
-    "objectID": "notebooks/geometric-objects.html#basic-use",
-    "href": "notebooks/geometric-objects.html#basic-use",
-    "title": "Geometric Objects",
-    "section": "Basic Use",
-    "text": "Basic Use\nGeom functions determine how mapped data becomes visible marks. Layers are drawn in the order they are added.\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point(aes(fill=\"class\"), size=5)\n    .geom_point(aes(shape=\"class\"))\n)"
+    "objectID": "notebooks/facets.html#facet_wrap-subplot-sequence",
+    "href": "notebooks/facets.html#facet_wrap-subplot-sequence",
+    "title": "Facets (Subplots)",
+    "section": "facet_wrap(): Subplot Sequence",
+    "text": "facet_wrap(): Subplot Sequence\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point(show_legend=False)\n    .facet_wrap(\"class\")\n)\n\n\n\n\n\n\n\n\nUse ncol= or nrow= to control the layout.\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point(show_legend=False)\n    .facet_wrap(\"class\", ncol=2)\n)"
   },
   {
-    "objectID": "notebooks/geometric-objects.html#individual-geoms",
-    "href": "notebooks/geometric-objects.html#individual-geoms",
-    "title": "Geometric Objects",
-    "section": "Individual Geoms",
-    "text": "Individual Geoms\n\nScatterplot With Text\n\nhighest_mpg = mpg.filter(\n    pl.col(\"hwy\") == pl.col(\"hwy\").max(),\n    pl.col(\"cty\") == pl.col(\"cty\").max(),\n)\n\n(\n    mpg.ggplot()\n    .aes(\"cty\", \"hwy\")\n    .geom_point()\n    .geom_text(\n        aes(label=\"model\"),\n        nudge_y=-2,\n        nudge_x=-1,\n        data=highest_mpg,\n    )\n)\n\n\n\n\n\n\n\n\n\n\nBarchart on Counts\n\ncounts = mpg.group_by(\"class\", \"drv\").len().rename({\"len\": \"count\"})\n\n(\n    counts.ggplot()\n    .aes(\"class\", \"count\", fill=\"drv\")\n    .geom_col()\n)\n\n\n\n\n\n\n\n\n\n\nRectangles\n\nrectangles = pl.DataFrame(\n    {\n        \"xmin\": [1, 2, 3],\n        \"ymin\": [1, 2, 3],\n        \"xmax\": [2, 3, 4],\n        \"ymax\": [2, 3, 4],\n    }\n)\n\n(\n    rectangles.ggplot()\n    .aes(xmin=\"xmin\", ymin=\"ymin\", xmax=\"xmax\", ymax=\"ymax\")\n    .geom_rect(fill=\"orange\")\n)"
+    "objectID": "notebooks/facets.html#facet_grid-subplot-matrix",
+    "href": "notebooks/facets.html#facet_grid-subplot-matrix",
+    "title": "Facets (Subplots)",
+    "section": "facet_grid(): Subplot Matrix",
+    "text": "facet_grid(): Subplot Matrix\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .facet_grid(\"cyl\", \"year\")\n)"
   },
   {
-    "objectID": "notebooks/geometric-objects.html#collective-geoms-for-distributions",
-    "href": "notebooks/geometric-objects.html#collective-geoms-for-distributions",
-    "title": "Geometric Objects",
-    "section": "Collective Geoms for Distributions",
-    "text": "Collective Geoms for Distributions\n\nBoxplots and Violins\n\nselected_classes = [\"2seater\", \"compact\", \"midsize\"]\nmpg_box = mpg.filter(pl.col(\"class\").is_in(selected_classes))\nmpg_violin = mpg.filter(~pl.col(\"class\").is_in(selected_classes))\n\n(\n    ggplot()\n    .aes(\"class\", \"cty\")\n    .geom_boxplot(data=mpg_box, fill=\"orange\")\n    .geom_violin(data=mpg_violin, fill=\"lightblue\")\n)\n\n/Users/igow/git/plotnine/plotnine/stats/stat.py:320: UserWarning: \nThe following aesthetics were dropped during processing: ['y'].\nplotnine could not infer the correct grouping.\nDid you forget to specify a `group` aesthetic or to convert a numerical variable into a categorial?\n\n\n\n\n\n\n\n\n\n\n\n\nHistograms and Densities\n\n(\n    mpg.ggplot()\n    .aes(\"cty\")\n    .geom_histogram()\n)\n\n/Users/igow/git/plotnine/plotnine/stats/stat_bin.py:111: PlotnineWarning: 'stat_bin()' using 'bins = 17'. Pick better value with 'binwidth'.\n\n\n\n\n\n\n\n\n\n\n(\n    mpg.ggplot()\n    .aes(\"cty\")\n    .geom_density(fill=\"lightblue\")\n)\n\n\n\n\n\n\n\n\n\n\nSmoothing\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .geom_smooth(method=\"lm\", color=\"blue\", fill=\"orange\")\n)"
+    "objectID": "notebooks/facets.html#facetting-formula-syntax",
+    "href": "notebooks/facets.html#facetting-formula-syntax",
+    "title": "Facets (Subplots)",
+    "section": "Facetting Formula Syntax",
+    "text": "Facetting Formula Syntax\nBoth facet_wrap() and facet_grid() support a formula-like syntax.\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .facet_grid(\"cyl ~ year\")\n)"
   },
   {
-    "objectID": "notebooks/geometric-objects.html#collective-geoms-for-lines-and-fills",
-    "href": "notebooks/geometric-objects.html#collective-geoms-for-lines-and-fills",
-    "title": "Geometric Objects",
-    "section": "Collective Geoms for Lines and Fills",
-    "text": "Collective Geoms for Lines and Fills\n\n(\n    huron.ggplot()\n    .aes(\"year\", \"level\")\n    .geom_line()\n    .geom_point()\n)\n\n\n\n\n\n\n\n\n\n(\n    huron.ggplot()\n    .aes(\"year\", \"level\")\n    .geom_ribbon(aes(ymax=\"level\"), ymin=0, fill=\"lightblue\")\n    .geom_point()\n)"
-  },
-  {
-    "objectID": "notebooks/geometric-objects.html#position-adjustments",
-    "href": "notebooks/geometric-objects.html#position-adjustments",
-    "title": "Geometric Objects",
-    "section": "Position Adjustments",
-    "text": "Position Adjustments\n\nJitter With Random Noise\n\n(\n    mpg.ggplot()\n    .aes(\"cty\", \"hwy\")\n    .geom_point(alpha=0.2)\n)\n\n\n\n\n\n\n\n\n\n(\n    mpg.ggplot()\n    .aes(\"cty\", \"hwy\")\n    .geom_point(position=p9.position_jitter())\n)\n\n\n\n\n\n\n\n\n\n\nDodge and Fill for Bars\n\n(\n    diamonds.ggplot()\n    .aes(\"color\", fill=\"cut\")\n    .add_theme(legend_position=\"none\")\n    .geom_bar()\n)\n\n\n\n\n\n\n\n\n\n(\n    diamonds.ggplot()\n    .aes(\"color\", fill=\"cut\")\n    .add_theme(legend_position=\"none\")\n    .geom_bar(position=p9.position_fill())\n)\n\n\n\n\n\n\n\n\n\n(\n    diamonds.ggplot()\n    .aes(\"color\", fill=\"cut\")\n    .add_theme(legend_position=\"none\")\n    .geom_bar(position=p9.position_dodge())\n)"
-  },
-  {
-    "objectID": "notebooks/geometric-objects.html#statistical-transformations",
-    "href": "notebooks/geometric-objects.html#statistical-transformations",
-    "title": "Geometric Objects",
-    "section": "Statistical Transformations",
-    "text": "Statistical Transformations\n\n(\n    mpg.ggplot()\n    .aes(\"trans\", \"cty\")\n    .geom_point()\n    .geom_point(\n        aes(group=\"trans\"),\n        color=\"red\",\n        size=3,\n        stat=\"summary\",\n        fun_y=lambda x: x.mean(),\n    )\n)\n\n\n\n\n\n\n\n\n\nmean_mpg = mpg.group_by(\"trans\").agg(pl.col(\"cty\").mean())\nmean_mpg\n\n\nshape: (10, 2)\n\n\n\ntrans\ncty\n\n\nstr\nf64\n\n\n\n\n\"auto(av)\"\n20.0\n\n\n\"auto(l6)\"\n13.666667\n\n\n\"auto(l5)\"\n14.717949\n\n\n\"auto(s6)\"\n17.375\n\n\n\"auto(s5)\"\n17.333333\n\n\n\"auto(l3)\"\n21.0\n\n\n\"auto(l4)\"\n15.939759\n\n\n\"manual(m5)\"\n19.258621\n\n\n\"auto(s4)\"\n18.666667\n\n\n\"manual(m6)\"\n16.894737\n\n\n\n\n\n\n\n(\n    mpg.ggplot()\n    .aes(\"trans\", \"cty\")\n    .geom_point()\n    .geom_point(data=mean_mpg, color=\"red\", size=3)\n)"
+    "objectID": "notebooks/facets.html#scales-for-freeing-axes",
+    "href": "notebooks/facets.html#scales-for-freeing-axes",
+    "title": "Facets (Subplots)",
+    "section": "scales= for Freeing Axes",
+    "text": "scales= for Freeing Axes\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .facet_grid(\"cyl ~ year\", scales=\"free_y\")\n)"
   },
   {
     "objectID": "notebooks/bar-plot-with-2-variables.html",
@@ -249,14 +256,14 @@
     "href": "index.html",
     "title": "plotnine-polars",
     "section": "",
-    "text": "This site collects examples and guides for the plotnine_polars package.\nThe focus here is slightly different from the original site:\n\nexamples use Polars data frames directly\nplots are built with df.ggplot() where that reads naturally\nthe fluent API comes from plotnine_polars, not from a fork of plotnine\n\nImporting plotnine_polars registers the Polars dataframe namespace:\n\nimport polars as pl\nimport plotnine_polars\n\ndf = pl.DataFrame({\"x\": [1, 2, 3], \"y\": [3, 2, 1]})\n\n(\n    df.ggplot()\n    .aes(\"x\", \"y\")\n    .geom_point()\n    .geom_line()\n)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRecreates Anscombe’s classic quartet with plotnine_polars, polars, and scikit-learn, including faceted regression lines and a polished final chart.\n\n\n\n\nShows how to add titles, subtitles, captions, and legend labels with plotnine_polars.\n\n\n\n\n\n\n\nBuilds a grouped bar chart step by step, using Polars for the data and layer-specific label mappings for the dodged text annotations.\n\n\n\n\nDemonstrates facet_wrap(), facet_grid(), formula syntax, and free scales in a compact subplot-focused notebook.\n\n\n\n\n\n\n\n\n\n\nCondenses the plotnine geoms guide into a notebook covering points, bars, rectangles, lines, ribbons, distributions, position adjustments, and summaries.\n\n\n\n\nFocuses on global versus layer-local aes(), literal settings, grouping, and expression-based mappings.\n\n\n\n\n\n\n\nCovers manual scales, breaks, labels, limits, legend merging, guide placement, and guide customization in the plotnine_polars style.\n\n\n\n\nMost notebooks on this site are adapted from the official plotnine gallery and plotnine guides."
+    "text": "This site collects examples and guides for the plotnine_polars package.\nThe focus here is slightly different from the original site:\n\nexamples use Polars data frames directly\nplots are built with df.ggplot() where that reads naturally\nthe fluent API comes from plotnine_polars, not from a fork of plotnine\n\nImporting plotnine_polars registers the Polars dataframe namespace:\n\nimport polars as pl\nimport plotnine_polars\n\ndf = pl.DataFrame({\"x\": [1, 2, 3], \"y\": [3, 2, 1]})\n\n(\n    df.ggplot()\n    .aes(\"x\", \"y\")\n    .geom_point()\n    .geom_line()\n)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRecreates Anscombe’s classic quartet with plotnine_polars, polars, and scikit-learn, including faceted regression lines and a polished final chart.\n\n\n\n\nShows how to add titles, subtitles, captions, and legend labels with plotnine_polars.\n\n\n\n\n\n\n\nBuilds a grouped bar chart step by step, using Polars for the data and layer-specific label mappings for the dodged text annotations.\n\n\n\n\nDemonstrates facet_wrap(), facet_grid(), formula syntax, and free scales in a compact subplot-focused notebook.\n\n\n\n\n\n\n\nRecreates the chapter 1 daily Citi Bike trips area chart with a compact, pre-aggregated dataset and the plotnine_polars API.\n\n\n\n\nRecreates the chapter 1 neighborhood-and-stations map with compact parquet files and the plotnine_polars API.\n\n\n\n\n\n\n\n\n\n\nCondenses the plotnine geoms guide into a notebook covering points, bars, rectangles, lines, ribbons, distributions, position adjustments, and summaries.\n\n\n\n\nFocuses on global versus layer-local aes(), literal settings, grouping, and expression-based mappings.\n\n\n\n\n\n\n\nCovers manual scales, breaks, labels, limits, legend merging, guide placement, and guide customization in the plotnine_polars style.\n\n\n\n\nMost notebooks on this site are adapted from the official plotnine gallery and plotnine guides."
   },
   {
     "objectID": "index.html#gallery-adaptations",
     "href": "index.html#gallery-adaptations",
     "title": "plotnine-polars",
     "section": "",
-    "text": "Recreates Anscombe’s classic quartet with plotnine_polars, polars, and scikit-learn, including faceted regression lines and a polished final chart.\n\n\n\n\nShows how to add titles, subtitles, captions, and legend labels with plotnine_polars.\n\n\n\n\n\n\n\nBuilds a grouped bar chart step by step, using Polars for the data and layer-specific label mappings for the dodged text annotations.\n\n\n\n\nDemonstrates facet_wrap(), facet_grid(), formula syntax, and free scales in a compact subplot-focused notebook."
+    "text": "Recreates Anscombe’s classic quartet with plotnine_polars, polars, and scikit-learn, including faceted regression lines and a polished final chart.\n\n\n\n\nShows how to add titles, subtitles, captions, and legend labels with plotnine_polars.\n\n\n\n\n\n\n\nBuilds a grouped bar chart step by step, using Polars for the data and layer-specific label mappings for the dodged text annotations.\n\n\n\n\nDemonstrates facet_wrap(), facet_grid(), formula syntax, and free scales in a compact subplot-focused notebook.\n\n\n\n\n\n\n\nRecreates the chapter 1 daily Citi Bike trips area chart with a compact, pre-aggregated dataset and the plotnine_polars API.\n\n\n\n\nRecreates the chapter 1 neighborhood-and-stations map with compact parquet files and the plotnine_polars API."
   },
   {
     "objectID": "index.html#guide-adaptations",
@@ -308,46 +315,81 @@
     "text": "Bonus: Apply Linear Regression\n\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.metrics import r2_score\n\n\ndef fit_lr(s):\n    lr = LinearRegression()\n    X = s.struct.field(\"x\").to_numpy().reshape(-1, 1)\n    y = s.struct.field(\"y\").to_numpy()\n\n    lr.fit(X, y)\n    intercept = lr.intercept_\n    slope = lr.coef_[0]\n    r2 = r2_score(y, intercept + slope * X)\n\n    return {\"intercept\": intercept, \"slope\": slope, \"r2\": r2}\n\n\n(\n    anscombe_quartet\n    .group_by(\"dataset\", maintain_order=True)\n    .agg(\n        pl.col(\"x\", \"y\").mean().name.prefix(\"mean_\"),\n        pl.col(\"x\", \"y\").var().name.prefix(\"variance_\"),\n        pl.corr(\"x\", \"y\").alias(\"correlation_xy\"),\n        (\n            pl.struct(\"x\", \"y\")\n            .implode()\n            .map_elements(\n                fit_lr,\n                return_dtype=pl.Struct(\n                    {\"intercept\": pl.Float64, \"slope\": pl.Float64, \"r2\": pl.Float64}\n                ),\n            )\n            .alias(\"lr\")\n        ),\n    )\n    .unnest(\"lr\")\n)\n\n\nshape: (4, 9)\n\n\n\ndataset\nmean_x\nmean_y\nvariance_x\nvariance_y\ncorrelation_xy\nintercept\nslope\nr2\n\n\nstr\nf64\nf64\nf64\nf64\nf64\nf64\nf64\nf64\n\n\n\n\n\"I\"\n9.00\n7.50\n11.00\n4.13\n0.82\n3.00\n0.50\n0.67\n\n\n\"II\"\n9.00\n7.50\n11.00\n4.13\n0.82\n3.00\n0.50\n0.67\n\n\n\"III\"\n9.00\n7.50\n11.00\n4.12\n0.82\n3.00\n0.50\n0.67\n\n\n\"IV\"\n9.00\n7.50\n11.00\n4.12\n0.82\n3.00\n0.50\n0.67"
   },
   {
-    "objectID": "notebooks/facets.html",
-    "href": "notebooks/facets.html",
-    "title": "Facets (Subplots)",
+    "objectID": "notebooks/citi-bike-trips.html",
+    "href": "notebooks/citi-bike-trips.html",
+    "title": "Citi Bike Trips Per Borough",
     "section": "",
-    "text": "This notebook adapts the plotnine guide on facets to the plotnine_polars style.\nimport polars as pl\nimport plotnine_polars\nfrom plotnine.data import mpg"
+    "text": "This page recreates the final plot shown just before the Load section in chapter 1 of Python Polars: The Definitive Guide, using plotnine_polars.\nTo keep the example focused on plotting, it uses a compact pre-aggregated table with daily trip counts by borough for March 2024.\nimport polars as pl\nimport plotnine_polars\nfrom mizani.labels import label_comma\nfrom plotnine import element_line, element_rect, element_text"
   },
   {
-    "objectID": "notebooks/facets.html#setup",
-    "href": "notebooks/facets.html#setup",
-    "title": "Facets (Subplots)",
+    "objectID": "notebooks/citi-bike-trips.html#read-the-data",
+    "href": "notebooks/citi-bike-trips.html#read-the-data",
+    "title": "Citi Bike Trips Per Borough",
+    "section": "Read the data",
+    "text": "Read the data\n\ntrips_per_day = (\n    pl.read_csv(\n        \"../data/citi-bike-trips-per-day.csv\",\n        try_parse_dates=True,\n    )\n    .with_columns(\n        pl.col(\"borough_start\").cast(\n            pl.Enum([\"Bronx\", \"Brooklyn\", \"Manhattan\", \"Queens\"])\n        )\n    )\n)\n\ntrips_per_day\n\n\nshape: (124, 3)\n\n\n\nborough_start\ndatetime_start\nnum_trips\n\n\nenum\ndatetime[μs]\ni64\n\n\n\n\n\"Bronx\"\n2024-03-01 00:00:00\n2748\n\n\n\"Brooklyn\"\n2024-03-01 00:00:00\n20068\n\n\n\"Manhattan\"\n2024-03-01 00:00:00\n56434\n\n\n\"Queens\"\n2024-03-01 00:00:00\n5728\n\n\n\"Bronx\"\n2024-03-02 00:00:00\n1010\n\n\n…\n…\n…\n\n\n\"Queens\"\n2024-03-30 00:00:00\n6583\n\n\n\"Bronx\"\n2024-03-31 00:00:00\n2724\n\n\n\"Brooklyn\"\n2024-03-31 00:00:00\n25940\n\n\n\"Manhattan\"\n2024-03-31 00:00:00\n54440\n\n\n\"Queens\"\n2024-03-31 00:00:00\n6237"
+  },
+  {
+    "objectID": "notebooks/citi-bike-trips.html#plot",
+    "href": "notebooks/citi-bike-trips.html#plot",
+    "title": "Citi Bike Trips Per Borough",
+    "section": "Plot",
+    "text": "Plot\n\n(\n    trips_per_day.ggplot()\n    .aes(x=\"datetime_start\", y=\"num_trips\", fill=\"borough_start\")\n    .geom_area()\n    .scale_fill_brewer(type=\"qual\", palette=2)\n    .scale_x_datetime(date_labels=\"%-d\", date_breaks=\"1 day\", expand=(0, 0))\n    .scale_y_continuous(labels=label_comma(), expand=(0, 0))\n    .labs(\n        x=\"March 2024\",\n        fill=\"Borough\",\n        y=\"Trips per day\",\n        title=\"Citi Bike trips per day in March 2024\",\n        subtitle=\"On March 23, nearly 10 cm of rain fell in NYC\",\n    )\n    .theme_tufte(base_size=14)\n    .add_theme(\n        axis_ticks_major=element_line(color=\"white\"),\n        figure_size=(8, 5),\n        legend_position=\"top\",\n        plot_background=element_rect(fill=\"white\", color=\"white\"),\n        plot_caption=element_text(style=\"italic\"),\n        plot_title=element_text(ha=\"left\"),\n    )\n)"
+  },
+  {
+    "objectID": "notebooks/geometric-objects.html",
+    "href": "notebooks/geometric-objects.html",
+    "title": "Geometric Objects",
+    "section": "",
+    "text": "This notebook adapts the plotnine guide on geometric objects to the plotnine_polars style. Where the original page uses pandas-based wrangling, this version uses Polars.\nimport polars as pl\nimport plotnine as p9\nimport plotnine_polars\nfrom plotnine import aes\nfrom plotnine_polars import ggplot\nfrom plotnine.data import diamonds, huron, mpg"
+  },
+  {
+    "objectID": "notebooks/geometric-objects.html#setup",
+    "href": "notebooks/geometric-objects.html#setup",
+    "title": "Geometric Objects",
     "section": "Setup",
-    "text": "Setup\n\nmpg = pl.from_pandas(mpg)\nmpg.head()\n\n\nshape: (5, 11)\n\n\n\nmanufacturer\nmodel\ndispl\nyear\ncyl\ntrans\ndrv\ncty\nhwy\nfl\nclass\n\n\nstr\nstr\nf64\ni64\ni64\nstr\nstr\ni64\ni64\nstr\nstr\n\n\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"auto(l5)\"\n\"f\"\n18\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"manual(m5)\"\n\"f\"\n21\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"manual(m6)\"\n\"f\"\n20\n31\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"auto(av)\"\n\"f\"\n21\n30\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.8\n1999\n6\n\"auto(l5)\"\n\"f\"\n16\n26\n\"p\"\n\"compact\"\n\n\n\n\n\n\nHere is a single large plot that we can split into subplots.\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point()\n)"
+    "text": "Setup\n\nmpg = pl.from_pandas(mpg)\nhuron = pl.from_pandas(huron)\ndiamonds = pl.from_pandas(diamonds)\n\nmpg.head()\n\n\nshape: (5, 11)\n\n\n\nmanufacturer\nmodel\ndispl\nyear\ncyl\ntrans\ndrv\ncty\nhwy\nfl\nclass\n\n\nstr\nstr\nf64\ni64\ni64\nstr\nstr\ni64\ni64\nstr\nstr\n\n\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"auto(l5)\"\n\"f\"\n18\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n1.8\n1999\n4\n\"manual(m5)\"\n\"f\"\n21\n29\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"manual(m6)\"\n\"f\"\n20\n31\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.0\n2008\n4\n\"auto(av)\"\n\"f\"\n21\n30\n\"p\"\n\"compact\"\n\n\n\"audi\"\n\"a4\"\n2.8\n1999\n6\n\"auto(l5)\"\n\"f\"\n16\n26\n\"p\"\n\"compact\""
   },
   {
-    "objectID": "notebooks/facets.html#facet_wrap-subplot-sequence",
-    "href": "notebooks/facets.html#facet_wrap-subplot-sequence",
-    "title": "Facets (Subplots)",
-    "section": "facet_wrap(): Subplot Sequence",
-    "text": "facet_wrap(): Subplot Sequence\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point(show_legend=False)\n    .facet_wrap(\"class\")\n)\n\n\n\n\n\n\n\n\nUse ncol= or nrow= to control the layout.\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\", color=\"class\")\n    .geom_point(show_legend=False)\n    .facet_wrap(\"class\", ncol=2)\n)"
+    "objectID": "notebooks/geometric-objects.html#basic-use",
+    "href": "notebooks/geometric-objects.html#basic-use",
+    "title": "Geometric Objects",
+    "section": "Basic Use",
+    "text": "Basic Use\nGeom functions determine how mapped data becomes visible marks. Layers are drawn in the order they are added.\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point(aes(fill=\"class\"), size=5)\n    .geom_point(aes(shape=\"class\"))\n)"
   },
   {
-    "objectID": "notebooks/facets.html#facet_grid-subplot-matrix",
-    "href": "notebooks/facets.html#facet_grid-subplot-matrix",
-    "title": "Facets (Subplots)",
-    "section": "facet_grid(): Subplot Matrix",
-    "text": "facet_grid(): Subplot Matrix\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .facet_grid(\"cyl\", \"year\")\n)"
+    "objectID": "notebooks/geometric-objects.html#individual-geoms",
+    "href": "notebooks/geometric-objects.html#individual-geoms",
+    "title": "Geometric Objects",
+    "section": "Individual Geoms",
+    "text": "Individual Geoms\n\nScatterplot With Text\n\nhighest_mpg = mpg.filter(\n    pl.col(\"hwy\") == pl.col(\"hwy\").max(),\n    pl.col(\"cty\") == pl.col(\"cty\").max(),\n)\n\n(\n    mpg.ggplot()\n    .aes(\"cty\", \"hwy\")\n    .geom_point()\n    .geom_text(\n        aes(label=\"model\"),\n        nudge_y=-2,\n        nudge_x=-1,\n        data=highest_mpg,\n    )\n)\n\n\n\n\n\n\n\n\n\n\nBarchart on Counts\n\ncounts = mpg.group_by(\"class\", \"drv\").len().rename({\"len\": \"count\"})\n\n(\n    counts.ggplot()\n    .aes(\"class\", \"count\", fill=\"drv\")\n    .geom_col()\n)\n\n\n\n\n\n\n\n\n\n\nRectangles\n\nrectangles = pl.DataFrame(\n    {\n        \"xmin\": [1, 2, 3],\n        \"ymin\": [1, 2, 3],\n        \"xmax\": [2, 3, 4],\n        \"ymax\": [2, 3, 4],\n    }\n)\n\n(\n    rectangles.ggplot()\n    .aes(xmin=\"xmin\", ymin=\"ymin\", xmax=\"xmax\", ymax=\"ymax\")\n    .geom_rect(fill=\"orange\")\n)"
   },
   {
-    "objectID": "notebooks/facets.html#facetting-formula-syntax",
-    "href": "notebooks/facets.html#facetting-formula-syntax",
-    "title": "Facets (Subplots)",
-    "section": "Facetting Formula Syntax",
-    "text": "Facetting Formula Syntax\nBoth facet_wrap() and facet_grid() support a formula-like syntax.\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .facet_grid(\"cyl ~ year\")\n)"
+    "objectID": "notebooks/geometric-objects.html#collective-geoms-for-distributions",
+    "href": "notebooks/geometric-objects.html#collective-geoms-for-distributions",
+    "title": "Geometric Objects",
+    "section": "Collective Geoms for Distributions",
+    "text": "Collective Geoms for Distributions\n\nBoxplots and Violins\n\nselected_classes = [\"2seater\", \"compact\", \"midsize\"]\nmpg_box = mpg.filter(pl.col(\"class\").is_in(selected_classes))\nmpg_violin = mpg.filter(~pl.col(\"class\").is_in(selected_classes))\n\n(\n    ggplot()\n    .aes(\"class\", \"cty\")\n    .geom_boxplot(data=mpg_box, fill=\"orange\")\n    .geom_violin(data=mpg_violin, fill=\"lightblue\")\n)\n\n/Users/igow/git/plotnine/plotnine/stats/stat.py:320: UserWarning: \nThe following aesthetics were dropped during processing: ['y'].\nplotnine could not infer the correct grouping.\nDid you forget to specify a `group` aesthetic or to convert a numerical variable into a categorial?\n\n\n\n\n\n\n\n\n\n\n\n\nHistograms and Densities\n\n(\n    mpg.ggplot()\n    .aes(\"cty\")\n    .geom_histogram()\n)\n\n/Users/igow/git/plotnine/plotnine/stats/stat_bin.py:111: PlotnineWarning: 'stat_bin()' using 'bins = 17'. Pick better value with 'binwidth'.\n\n\n\n\n\n\n\n\n\n\n(\n    mpg.ggplot()\n    .aes(\"cty\")\n    .geom_density(fill=\"lightblue\")\n)\n\n\n\n\n\n\n\n\n\n\nSmoothing\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .geom_smooth(method=\"lm\", color=\"blue\", fill=\"orange\")\n)"
   },
   {
-    "objectID": "notebooks/facets.html#scales-for-freeing-axes",
-    "href": "notebooks/facets.html#scales-for-freeing-axes",
-    "title": "Facets (Subplots)",
-    "section": "scales= for Freeing Axes",
-    "text": "scales= for Freeing Axes\n\n(\n    mpg.ggplot()\n    .aes(\"displ\", \"hwy\")\n    .geom_point()\n    .facet_grid(\"cyl ~ year\", scales=\"free_y\")\n)"
+    "objectID": "notebooks/geometric-objects.html#collective-geoms-for-lines-and-fills",
+    "href": "notebooks/geometric-objects.html#collective-geoms-for-lines-and-fills",
+    "title": "Geometric Objects",
+    "section": "Collective Geoms for Lines and Fills",
+    "text": "Collective Geoms for Lines and Fills\n\n(\n    huron.ggplot()\n    .aes(\"year\", \"level\")\n    .geom_line()\n    .geom_point()\n)\n\n\n\n\n\n\n\n\n\n(\n    huron.ggplot()\n    .aes(\"year\", \"level\")\n    .geom_ribbon(aes(ymax=\"level\"), ymin=0, fill=\"lightblue\")\n    .geom_point()\n)"
+  },
+  {
+    "objectID": "notebooks/geometric-objects.html#position-adjustments",
+    "href": "notebooks/geometric-objects.html#position-adjustments",
+    "title": "Geometric Objects",
+    "section": "Position Adjustments",
+    "text": "Position Adjustments\n\nJitter With Random Noise\n\n(\n    mpg.ggplot()\n    .aes(\"cty\", \"hwy\")\n    .geom_point(alpha=0.2)\n)\n\n\n\n\n\n\n\n\n\n(\n    mpg.ggplot()\n    .aes(\"cty\", \"hwy\")\n    .geom_point(position=p9.position_jitter())\n)\n\n\n\n\n\n\n\n\n\n\nDodge and Fill for Bars\n\n(\n    diamonds.ggplot()\n    .aes(\"color\", fill=\"cut\")\n    .add_theme(legend_position=\"none\")\n    .geom_bar()\n)\n\n\n\n\n\n\n\n\n\n(\n    diamonds.ggplot()\n    .aes(\"color\", fill=\"cut\")\n    .add_theme(legend_position=\"none\")\n    .geom_bar(position=p9.position_fill())\n)\n\n\n\n\n\n\n\n\n\n(\n    diamonds.ggplot()\n    .aes(\"color\", fill=\"cut\")\n    .add_theme(legend_position=\"none\")\n    .geom_bar(position=p9.position_dodge())\n)"
+  },
+  {
+    "objectID": "notebooks/geometric-objects.html#statistical-transformations",
+    "href": "notebooks/geometric-objects.html#statistical-transformations",
+    "title": "Geometric Objects",
+    "section": "Statistical Transformations",
+    "text": "Statistical Transformations\n\n(\n    mpg.ggplot()\n    .aes(\"trans\", \"cty\")\n    .geom_point()\n    .geom_point(\n        aes(group=\"trans\"),\n        color=\"red\",\n        size=3,\n        stat=\"summary\",\n        fun_y=lambda x: x.mean(),\n    )\n)\n\n\n\n\n\n\n\n\n\nmean_mpg = mpg.group_by(\"trans\").agg(pl.col(\"cty\").mean())\nmean_mpg\n\n\nshape: (10, 2)\n\n\n\ntrans\ncty\n\n\nstr\nf64\n\n\n\n\n\"auto(s4)\"\n18.666667\n\n\n\"auto(l4)\"\n15.939759\n\n\n\"auto(l3)\"\n21.0\n\n\n\"auto(l5)\"\n14.717949\n\n\n\"auto(s6)\"\n17.375\n\n\n\"manual(m6)\"\n16.894737\n\n\n\"manual(m5)\"\n19.258621\n\n\n\"auto(l6)\"\n13.666667\n\n\n\"auto(av)\"\n20.0\n\n\n\"auto(s5)\"\n17.333333\n\n\n\n\n\n\n\n(\n    mpg.ggplot()\n    .aes(\"trans\", \"cty\")\n    .geom_point()\n    .geom_point(data=mean_mpg, color=\"red\", size=3)\n)"
   },
   {
     "objectID": "notebooks/please-i-want-some-more-labels.html",

@@ -158,6 +158,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./notebooks/facets.html"> 
 <span class="menu-text">Facets</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./notebooks/citi-bike-trips.html"> 
+<span class="menu-text">Citi Bike</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./notebooks/nyc-neighborhoods-and-stations.html"> 
+<span class="menu-text">NYC Map</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -214,7 +222,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>the fluent API comes from <code>plotnine_polars</code>, not from a fork of <code>plotnine</code></li>
 </ul>
 <p>Importing <code>plotnine_polars</code> registers the Polars dataframe namespace:</p>
-<div id="b99bb9de" class="cell" data-execution_count="1">
+<div id="06357c18" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotnine_polars</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -259,6 +267,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="facets-subplots" class="level3">
 <h3 class="anchored" data-anchor-id="facets-subplots"><a href="./notebooks/facets.html">Facets (Subplots)</a></h3>
 <p>Demonstrates <code>facet_wrap()</code>, <code>facet_grid()</code>, formula syntax, and free scales in a compact subplot-focused notebook.</p>
+</section>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<section id="citi-bike-trips" class="level3">
+<h3 class="anchored" data-anchor-id="citi-bike-trips"><a href="./notebooks/citi-bike-trips.html">Citi Bike Trips</a></h3>
+<p>Recreates the chapter 1 daily Citi Bike trips area chart with a compact, pre-aggregated dataset and the <code>plotnine_polars</code> API.</p>
+</section>
+</div><div class="column" style="width:50%;">
+<section id="nyc-neighborhoods-and-stations" class="level3">
+<h3 class="anchored" data-anchor-id="nyc-neighborhoods-and-stations"><a href="./notebooks/nyc-neighborhoods-and-stations.html">NYC Neighborhoods and Stations</a></h3>
+<p>Recreates the chapter 1 neighborhood-and-stations map with compact parquet files and the <code>plotnine_polars</code> API.</p>
 </section>
 </div>
 </div>
