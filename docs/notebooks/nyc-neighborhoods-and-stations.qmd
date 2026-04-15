@@ -1,0 +1,63 @@
+---
+title: "NYC Neighborhoods and Citi Bike Stations"
+format:
+  html:
+    code-tools: true
+jupyter: plotnine-polars
+---
+
+This page recreates the chapter 1 map of New York City neighborhoods and Citi
+Bike stations with `plotnine_polars`.
+
+To keep the example focused on plotting, it uses compact parquet files for the
+polygon coordinates and station locations.
+
+```{python}
+import polars as pl
+import plotnine_polars
+from plotnine import aes, element_rect, element_text
+```
+
+## Read the data
+
+```{python}
+neighborhoods_coords = pl.read_parquet("../data/nyc-neighborhoods-coords.parquet")
+stations = pl.read_parquet("../data/citi-bike-stations.parquet")
+
+print(neighborhoods_coords.head())
+print(stations.head())
+```
+
+## Plot
+
+```{python}
+#| fig-width: 6
+#| fig-height: 7.5
+#| out-width: 70%
+#| fig-align: center
+(
+    neighborhoods_coords.ggplot()
+    .aes(x="lon", y="lat", group="id")
+    .geom_polygon(aes(alpha="neighborhood", fill="borough"), color="white")
+    .geom_point(data=stations, size=0.1)
+    .scale_x_continuous(expand=(0, 0))
+    .scale_y_continuous(expand=(0, 0, 0, 0.01))
+    .scale_alpha_ordinal(range=(0.3, 1))
+    .scale_fill_brewer(type="qual", palette=2)
+    .add_guides(alpha=False)
+    .labs(
+        title="New York City neighborhoods and Citi Bike stations",
+        subtitle="2,131 stations across 106 neighborhoods",
+        caption="Source: Citi Bike system data and NYC neighborhood boundaries",
+        fill="Borough",
+    )
+    .theme_void(base_size=14)
+    .add_theme(
+        dpi=300,
+        plot_background=element_rect(fill="white", color="white"),
+        plot_caption=element_text(style="italic"),
+        plot_margin=0.01,
+        plot_title=element_text(ha="left"),
+    )
+)
+```

@@ -24,6 +24,10 @@ website:
         text: Scales
       - href: notebooks/facets.qmd
         text: Facets
+      - href: notebooks/citi-bike-trips.qmd
+        text: Citi Bike
+      - href: notebooks/nyc-neighborhoods-and-stations.qmd
+        text: NYC Map
 
 format:
   html:

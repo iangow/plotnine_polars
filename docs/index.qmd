@@ -63,6 +63,22 @@ a compact subplot-focused notebook.
 :::
 :::
 
+::: {.columns}
+::: {.column width="50%"}
+### [Citi Bike Trips](notebooks/citi-bike-trips.qmd)
+
+Recreates the chapter 1 daily Citi Bike trips area chart with a compact,
+pre-aggregated dataset and the `plotnine_polars` API.
+:::
+
+::: {.column width="50%"}
+### [NYC Neighborhoods and Stations](notebooks/nyc-neighborhoods-and-stations.qmd)
+
+Recreates the chapter 1 neighborhood-and-stations map with compact parquet
+files and the `plotnine_polars` API.
+:::
+:::
+
 ## Guide adaptations
 
 ::: {.columns}
