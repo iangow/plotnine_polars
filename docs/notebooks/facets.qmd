@@ -1,0 +1,90 @@
+---
+title: "Facets (Subplots)"
+format:
+  html:
+    code-tools: true
+jupyter: plotnine-polars
+---
+
+This notebook adapts the plotnine guide on facets to the `plotnine_polars`
+style.
+
+```{python}
+import polars as pl
+import plotnine_polars
+from plotnine.data import mpg
+```
+
+## Setup
+
+```{python}
+mpg = pl.from_pandas(mpg)
+mpg.head()
+```
+
+Here is a single large plot that we can split into subplots.
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy", color="class")
+    .geom_point()
+)
+```
+
+## `facet_wrap()`: Subplot Sequence
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy", color="class")
+    .geom_point(show_legend=False)
+    .facet_wrap("class")
+)
+```
+
+Use `ncol=` or `nrow=` to control the layout.
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy", color="class")
+    .geom_point(show_legend=False)
+    .facet_wrap("class", ncol=2)
+)
+```
+
+## `facet_grid()`: Subplot Matrix
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy")
+    .geom_point()
+    .facet_grid("cyl", "year")
+)
+```
+
+## Facetting Formula Syntax
+
+Both `facet_wrap()` and `facet_grid()` support a formula-like syntax.
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy")
+    .geom_point()
+    .facet_grid("cyl ~ year")
+)
+```
+
+## `scales=` for Freeing Axes
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy")
+    .geom_point()
+    .facet_grid("cyl ~ year", scales="free_y")
+)
+```

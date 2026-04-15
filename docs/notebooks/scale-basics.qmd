@@ -1,0 +1,319 @@
+---
+title: "Scales, Legends, and Guides"
+format:
+  html:
+    code-tools: true
+jupyter: plotnine-polars
+---
+
+This notebook adapts the plotnine guide on scales, legends, and guides to the
+`plotnine_polars` style. Where the original page uses pandas for small example
+tables, this version uses Polars.
+
+```{python}
+import polars as pl
+import plotnine as p9
+import plotnine_polars
+from plotnine import aes
+from plotnine_polars import ggplot
+from plotnine.data import huron, mpg
+```
+
+## Setup
+
+```{python}
+mpg = pl.from_pandas(mpg)
+huron = pl.from_pandas(huron)
+
+mpg.head()
+```
+
+## Scale Basics
+
+### Manual Color Mapping
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy", color="class")
+    .geom_point()
+    .scale_color_manual(
+        name="Car class",
+        breaks=["2seater", "compact"],
+        values=["red", "blue"],
+    )
+)
+```
+
+### ColorBrewer Palette
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy", color="class")
+    .geom_point()
+    .scale_color_brewer(type="qual", palette=2)
+)
+```
+
+## Varieties of Scales
+
+### Default Continuous and Discrete Color Scales
+
+```{python}
+base_plot = mpg.ggplot().aes("displ", "hwy").theme_grey(base_size=20)
+
+(
+    base_plot
+    .geom_point(aes(color="cyl"))
+)
+```
+
+```{python}
+(
+    base_plot
+    .geom_point(aes(color="factor(cyl)"))
+)
+```
+
+### Position Scales
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy")
+    .geom_point()
+    .scale_x_reverse()
+    .scale_y_log10()
+)
+```
+
+### Identity Scales
+
+```{python}
+df_identity = pl.DataFrame(
+    {
+        "x": [1, 2, 3],
+        "y": [1, 2, 3],
+        "my_color": ["red", "blue", "green"],
+    }
+)
+
+(
+    df_identity.ggplot()
+    .aes("x", "y", color="my_color")
+    .geom_point(size=5)
+    .scale_color_identity()
+)
+```
+
+## `name=` for Guide Labels
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy", color="class")
+    .geom_point()
+    .scale_x_continuous(name="Engine displacement (litres)")
+    .scale_y_continuous(name="Highway miles per gallon")
+    .scale_color_discrete(name="Car class")
+)
+```
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy", color="class")
+    .geom_point()
+    .xlab("Engine displacement (litres)")
+    .labs(
+        y="Highway miles per gallon",
+        color="Car class",
+        title="Use labs() to quickly set labels",
+    )
+)
+```
+
+## `values=` for Manual Styles
+
+```{python}
+keep_classes = ["2seater", "compact", "midsize"]
+filtered = mpg.filter(pl.col("class").is_in(keep_classes))
+
+(
+    filtered.ggplot()
+    .aes("displ", "hwy", shape="factor(cyl)")
+    .geom_point()
+    .scale_shape_manual(values=[".", "o", "v", ">"])
+)
+```
+
+## `breaks=` for Axis Ticks
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy", color="class")
+    .geom_point()
+    .scale_x_continuous(breaks=[4, 4.5, 5, 5.5])
+)
+```
+
+## `limits=` for Restricting Range
+
+```{python}
+huron_plot = (
+    huron.ggplot()
+    .aes("year", "level")
+    .geom_line()
+    .theme_grey(base_size=26)
+)
+
+(
+    huron_plot
+    .labs(title="Default range")
+)
+```
+
+```{python}
+(
+    huron_plot
+    .scale_x_continuous(limits=[1950, 1960])
+    .labs(title="Zoom in")
+)
+```
+
+```{python}
+(
+    huron_plot
+    .scale_x_continuous(limits=[1800, 2000])
+    .labs(title="Zoom out")
+)
+```
+
+```{python}
+(
+    huron.ggplot()
+    .aes("year", "level", color="year")
+    .geom_line()
+)
+```
+
+```{python}
+(
+    huron.ggplot()
+    .aes("year", "level", color="year")
+    .geom_line()
+    .scale_color_continuous(limits=[None, 1900])
+)
+```
+
+## `labels=` for Break Labels
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy", color="class")
+    .geom_point()
+    .scale_color_discrete(labels=lambda breaks: [s.upper() for s in breaks])
+)
+```
+
+```{python}
+(
+    mpg.ggplot()
+    .aes("displ", "hwy", color="class")
+    .geom_point()
+    .scale_x_continuous(breaks=[2, 4, 6], labels=["TWO", "FOUR", "SIX"])
+)
+```
+
+## Legend Merging
+
+```{python}
+merged_legend_plot = (
+    mpg.ggplot()
+    .aes("displ", "hwy", color="factor(cyl)", shape="factor(cyl)")
+    .geom_point()
+    .theme_grey(base_size=20)
+)
+
+(
+    merged_legend_plot
+    .labs(title="Merged guides")
+)
+```
+
+```{python}
+(
+    merged_legend_plot
+    .labs(title="Split guides")
+    .scale_shape_discrete(name="Shape")
+)
+```
+
+## Legend Position
+
+```{python}
+legend_position_plot = (
+    mpg.ggplot()
+    .aes("displ", "hwy", color="factor(cyl)", shape="factor(cyl)")
+    .geom_point()
+)
+
+(
+    legend_position_plot
+    .add_theme(legend_position="top")
+)
+```
+
+```{python}
+(
+    legend_position_plot
+    .add_theme(legend_position="none")
+)
+```
+
+## Guide Customization
+
+```{python}
+guide_plot = (
+    mpg.ggplot()
+    .aes("displ", "hwy", color="cyl")
+    .geom_point()
+    .add_theme(legend_key_size=30)
+)
+
+guide_plot
+```
+
+```{python}
+(
+    guide_plot
+    .add_guides(color=p9.guide_colorbar(reverse=True))
+)
+```
+
+```{python}
+guide_df = pl.DataFrame(
+    {
+        "x": list(map(str, range(5))),
+        "y": list(map(str, range(5))),
+        "p": list(map(str, range(5))),
+        "q": list(map(str, range(5))),
+        "r": list(map(str, range(5))),
+    }
+)
+
+(
+    guide_df.ggplot()
+    .aes("x", "y", color="p", size="q", shape="r")
+    .geom_point()
+    .labs(title="Merged color, size, and shape guides")
+    .add_guides(
+        color=p9.guide_legend("THE GUIDE"),
+        size=p9.guide_legend("THE GUIDE"),
+        shape=p9.guide_legend("THE GUIDE"),
+    )
+)
+```

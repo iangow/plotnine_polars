@@ -1,0 +1,143 @@
+---
+title: "Anscombe's Quartet"
+format:
+  html:
+    code-tools: true
+jupyter: plotnine-polars
+---
+
+In 1973, Francis Anscombe introduced four small datasets with nearly identical
+summary statistics but very different shapes. This notebook recreates that idea
+with `plotnine_polars`, `polars`, and `scikit-learn`.
+
+```{python}
+import polars as pl
+import plotnine_polars
+from plotnine import element_blank, element_line, element_rect, element_text
+from plotnine.data import anscombe_quartet
+```
+
+## Convert DataFrame to Polars
+
+```{python}
+anscombe_quartet = pl.from_pandas(anscombe_quartet)
+anscombe_quartet
+```
+
+## Compute Descriptive Statistics
+
+```{python}
+pl.Config.set_float_precision(2)
+
+anscombe_quartet.group_by("dataset", maintain_order=True).agg(
+    pl.col("x", "y").mean().name.prefix("mean_"),
+    pl.col("x", "y").var().name.prefix("variance_"),
+    pl.corr("x", "y").alias("correlation_xy"),
+)
+```
+
+## Exploratory Data Visualization
+
+```{python}
+(
+    anscombe_quartet.ggplot()
+    .aes("x", "y")
+    .geom_point()
+)
+```
+
+```{python}
+(
+    anscombe_quartet.ggplot()
+    .aes("x", "y", color="dataset")
+    .geom_point()
+)
+```
+
+```{python}
+(
+    anscombe_quartet.ggplot()
+    .aes("x", "y", color="dataset")
+    .facet_wrap("dataset")
+    .geom_point()
+)
+```
+
+```{python}
+(
+    anscombe_quartet.ggplot()
+    .aes("x", "y")
+    .geom_point()
+    .geom_smooth(method="lm", se=False, fullrange=True, color="blue")
+    .facet_wrap("dataset")
+)
+```
+
+## A Fine-Tuned Data Visualization
+
+```{python}
+(
+    anscombe_quartet.ggplot()
+    .aes("x", "y")
+    .geom_point(color="sienna", fill="darkorange", size=3)
+    .geom_smooth(method="lm", se=False, fullrange=True, color="steelblue", size=1)
+    .facet_wrap("dataset")
+    .scale_y_continuous(breaks=(4, 8, 12))
+    .coord_fixed(xlim=(3, 22), ylim=(2, 14))
+    .labs(title="Anscombe's Quartet")
+    .theme_tufte(base_family="Futura")
+    .add_theme(
+        axis_line=element_line(color="#4d4d4d"),
+        axis_ticks_major=element_line(color="#00000000"),
+        axis_title=element_blank(),
+        plot_background=element_rect(fill="#ffffff", color="#ffffff"),
+        dpi=144,
+        panel_spacing=0.09,
+        strip_text=element_text(size=12),
+        title=element_text(size=16, margin={"b": 20}),
+    )
+)
+```
+
+## Bonus: Apply Linear Regression
+
+```{python}
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+
+
+def fit_lr(s):
+    lr = LinearRegression()
+    X = s.struct.field("x").to_numpy().reshape(-1, 1)
+    y = s.struct.field("y").to_numpy()
+
+    lr.fit(X, y)
+    intercept = lr.intercept_
+    slope = lr.coef_[0]
+    r2 = r2_score(y, intercept + slope * X)
+
+    return {"intercept": intercept, "slope": slope, "r2": r2}
+
+
+(
+    anscombe_quartet
+    .group_by("dataset", maintain_order=True)
+    .agg(
+        pl.col("x", "y").mean().name.prefix("mean_"),
+        pl.col("x", "y").var().name.prefix("variance_"),
+        pl.corr("x", "y").alias("correlation_xy"),
+        (
+            pl.struct("x", "y")
+            .implode()
+            .map_elements(
+                fit_lr,
+                return_dtype=pl.Struct(
+                    {"intercept": pl.Float64, "slope": pl.Float64, "r2": pl.Float64}
+                ),
+            )
+            .alias("lr")
+        ),
+    )
+    .unnest("lr")
+)
+```

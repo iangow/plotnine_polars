@@ -1,0 +1,103 @@
+---
+title: "plotnine-polars"
+jupyter: plotnine-polars
+---
+
+# Documentation and examples for `plotnine_polars`
+
+This site adapts the examples from
+[plot-nine-fluid](https://iangow.github.io/plot-nine-fluid/) to the
+`plotnine_polars` package.
+
+The focus here is slightly different from the original site:
+
+- examples use Polars data frames directly
+- plots are built with `df.ggplot()` where that reads naturally
+- the fluent API comes from `plotnine_polars`, not from a fork of `plotnine`
+
+Importing `plotnine_polars` registers the Polars dataframe namespace:
+
+```{python}
+import polars as pl
+import plotnine_polars
+
+df = pl.DataFrame({"x": [1, 2, 3], "y": [3, 2, 1]})
+
+(
+    df.ggplot()
+    .aes("x", "y")
+    .geom_point()
+    .geom_line()
+)
+```
+
+## Gallery adaptations
+
+::: {.columns}
+::: {.column width="50%"}
+### [Anscombe's Quartet](notebooks/anscombes-quartet.qmd)
+
+Recreates Anscombe's classic quartet with `plotnine_polars`, `polars`, and
+`scikit-learn`, including faceted regression lines and a polished final chart.
+:::
+
+::: {.column width="50%"}
+### [Please, I Want Some More Labels](notebooks/please-i-want-some-more-labels.qmd)
+
+Shows how to add titles, subtitles, captions, and legend labels with
+`plotnine_polars`.
+:::
+:::
+
+::: {.columns}
+::: {.column width="50%"}
+### [A Bar Plot With 2 Variables](notebooks/bar-plot-with-2-variables.qmd)
+
+Builds a grouped bar chart step by step, using Polars for the data and
+layer-specific label mappings for the dodged text annotations.
+:::
+
+::: {.column width="50%"}
+### [Facets (Subplots)](notebooks/facets.qmd)
+
+Demonstrates `facet_wrap()`, `facet_grid()`, formula syntax, and free scales in
+a compact subplot-focused notebook.
+:::
+:::
+
+## Guide adaptations
+
+::: {.columns}
+::: {.column width="50%"}
+### [Geometric Objects](notebooks/geometric-objects.qmd)
+
+Condenses the plotnine geoms guide into a notebook covering points, bars,
+rectangles, lines, ribbons, distributions, position adjustments, and summaries.
+:::
+
+::: {.column width="50%"}
+### [Aesthetic Mappings](notebooks/aesthetic-mappings.qmd)
+
+Focuses on global versus layer-local `aes()`, literal settings, grouping, and
+expression-based mappings.
+:::
+:::
+
+::: {.columns}
+::: {.column width="50%"}
+### [Scales, Legends, and Guides](notebooks/scale-basics.qmd)
+
+Covers manual scales, breaks, labels, limits, legend merging, guide placement,
+and guide customization in the `plotnine_polars` style.
+:::
+
+::: {.column width="50%"}
+### Source material
+
+Most notebooks on this site are adapted from the official
+[plotnine gallery](https://plotnine.org/gallery/) and
+[plotnine guides](https://plotnine.org/guide/), using the original
+[plot-nine-fluid](https://iangow.github.io/plot-nine-fluid/) site as the
+starting point for the fluent API structure.
+:::
+:::

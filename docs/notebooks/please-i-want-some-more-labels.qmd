@@ -1,0 +1,64 @@
+---
+title: "Please, I Want Some More Labels"
+format:
+  html:
+    code-tools: true
+jupyter: plotnine-polars
+---
+
+This notebook adapts the plotnine gallery example on layered chart labels to
+`plotnine_polars`.
+
+```{python}
+import polars as pl
+import plotnine_polars
+from plotnine import element_text
+from plotnine.data import mtcars
+```
+
+## The Data
+
+```{python}
+mtcars = pl.from_pandas(mtcars)
+mtcars.head()
+```
+
+## Build the Caption
+
+```{python}
+caption = """\
+This graphic illustrates the inverse relationship between vehicle weight
+and fuel efficiency (MPG). It aims to highlight how heavier vehicles generally
+consume more fuel, and how the complexity of an engine's cylinder count and
+transmission system can affect its fuel economy.
+"""
+
+caption
+```
+
+## Add More Labels
+
+```{python}
+(
+    mtcars.ggplot()
+    .aes("mpg", "wt", colour="factor(cyl)", size="gear")
+    .geom_point()
+    .xlab("Miles per Gallon")
+    .labs(
+        y="Weight",
+        colour="Cylinders",
+        size="Gears",
+        title="Fuel Efficiency vs. Vehicle Weight",
+        subtitle="Exploring Factors that Affect the Fuel Efficiency of a Car",
+        caption=caption,
+    )
+    .theme_538()
+    .add_theme(
+        plot_caption=element_text(
+            ha="left",
+            margin={"t": 1, "units": "lines"},
+            linespacing=1.25,
+        )
+    )
+)
+```

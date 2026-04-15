@@ -1,0 +1,39 @@
+project:
+  type: website
+  render:
+    - index.qmd
+    - notebooks/*.qmd
+
+website:
+  title: "plotnine-polars"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: notebooks/anscombes-quartet.qmd
+        text: Anscombe's Quartet
+      - href: notebooks/please-i-want-some-more-labels.qmd
+        text: More Labels
+      - href: notebooks/bar-plot-with-2-variables.qmd
+        text: Bar Plot
+      - href: notebooks/geometric-objects.qmd
+        text: Geoms
+      - href: notebooks/aesthetic-mappings.qmd
+        text: Aesthetics
+      - href: notebooks/scale-basics.qmd
+        text: Scales
+      - href: notebooks/facets.qmd
+        text: Facets
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: false
+    code-overflow: wrap
+    respect-user-color-scheme: true
+
+execute:
+  keep-ipynb: false
+
+jupyter: plotnine-polars
