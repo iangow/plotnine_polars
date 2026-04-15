@@ -223,7 +223,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>This notebook adapts the plotnine guide on scales, legends, and guides to the <code>plotnine_polars</code> style. Where the original page uses pandas for small example tables, this version uses Polars.</p>
-<div id="b33d3102" class="cell" data-execution_count="1">
+<div id="c3acdd56" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotnine <span class="im">as</span> p9</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotnine_polars</span>
@@ -233,7 +233,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="c5233873" class="cell" data-execution_count="2">
+<div id="dc132f3e" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mpg <span class="op">=</span> pl.from_pandas(mpg)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>huron <span class="op">=</span> pl.from_pandas(huron)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -352,7 +352,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="scale-basics">Scale Basics</h2>
 <section id="manual-color-mapping" class="level3">
 <h3 class="anchored" data-anchor-id="manual-color-mapping">Manual Color Mapping</h3>
-<div id="dd88b180" class="cell" data-execution_count="3">
+<div id="9b53154b" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>, color<span class="op">=</span><span class="st">"class"</span>)</span>
@@ -378,7 +378,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="colorbrewer-palette" class="level3">
 <h3 class="anchored" data-anchor-id="colorbrewer-palette">ColorBrewer Palette</h3>
-<div id="5a9563b0" class="cell" data-execution_count="4">
+<div id="226fb554" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>, color<span class="op">=</span><span class="st">"class"</span>)</span>
@@ -399,7 +399,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="varieties-of-scales">Varieties of Scales</h2>
 <section id="default-continuous-and-discrete-color-scales" class="level3">
 <h3 class="anchored" data-anchor-id="default-continuous-and-discrete-color-scales">Default Continuous and Discrete Color Scales</h3>
-<div id="736eb557" class="cell" data-execution_count="5">
+<div id="7f17984c" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>base_plot <span class="op">=</span> mpg.ggplot().aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>).theme_grey(base_size<span class="op">=</span><span class="dv">20</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>(</span>
@@ -414,7 +414,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="2486496c" class="cell" data-execution_count="6">
+<div id="2d9b6e9a" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    base_plot</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .geom_point(aes(color<span class="op">=</span><span class="st">"factor(cyl)"</span>))</span>
@@ -430,7 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="position-scales" class="level3">
 <h3 class="anchored" data-anchor-id="position-scales">Position Scales</h3>
-<div id="7d0a90f6" class="cell" data-execution_count="7">
+<div id="d8a93a00" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>)</span>
@@ -449,7 +449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="identity-scales" class="level3">
 <h3 class="anchored" data-anchor-id="identity-scales">Identity Scales</h3>
-<div id="478ad0f4" class="cell" data-execution_count="8">
+<div id="d0a4f842" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df_identity <span class="op">=</span> pl.DataFrame(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    {</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"x"</span>: [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>],</span>
@@ -476,7 +476,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="name-for-guide-labels" class="level2">
 <h2 class="anchored" data-anchor-id="name-for-guide-labels"><code>name=</code> for Guide Labels</h2>
-<div id="20636a53" class="cell" data-execution_count="9">
+<div id="dca15921" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>, color<span class="op">=</span><span class="st">"class"</span>)</span>
@@ -493,7 +493,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="ef9d9bec" class="cell" data-execution_count="10">
+<div id="80f9979d" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>, color<span class="op">=</span><span class="st">"class"</span>)</span>
@@ -516,7 +516,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="values-for-manual-styles" class="level2">
 <h2 class="anchored" data-anchor-id="values-for-manual-styles"><code>values=</code> for Manual Styles</h2>
-<div id="dbf41dc0" class="cell" data-execution_count="11">
+<div id="d3caf996" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>keep_classes <span class="op">=</span> [<span class="st">"2seater"</span>, <span class="st">"compact"</span>, <span class="st">"midsize"</span>]</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>filtered <span class="op">=</span> mpg.<span class="bu">filter</span>(pl.col(<span class="st">"class"</span>).is_in(keep_classes))</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -537,7 +537,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="breaks-for-axis-ticks" class="level2">
 <h2 class="anchored" data-anchor-id="breaks-for-axis-ticks"><code>breaks=</code> for Axis Ticks</h2>
-<div id="3ac130c1" class="cell" data-execution_count="12">
+<div id="85373c32" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>, color<span class="op">=</span><span class="st">"class"</span>)</span>
@@ -555,7 +555,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="limits-for-restricting-range" class="level2">
 <h2 class="anchored" data-anchor-id="limits-for-restricting-range"><code>limits=</code> for Restricting Range</h2>
-<div id="9f58dc4a" class="cell" data-execution_count="13">
+<div id="3f405f72" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>huron_plot <span class="op">=</span> (</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    huron.ggplot()</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"year"</span>, <span class="st">"level"</span>)</span>
@@ -575,7 +575,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="bd2f79c3" class="cell" data-execution_count="14">
+<div id="d345bb31" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    huron_plot</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .scale_x_continuous(limits<span class="op">=</span>[<span class="dv">1950</span>, <span class="dv">1960</span>])</span>
@@ -592,7 +592,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="e1235178" class="cell" data-execution_count="15">
+<div id="675e9e21" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    huron_plot</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .scale_x_continuous(limits<span class="op">=</span>[<span class="dv">1800</span>, <span class="dv">2000</span>])</span>
@@ -606,7 +606,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="a87b394d" class="cell" data-execution_count="16">
+<div id="4004a491" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    huron.ggplot()</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"year"</span>, <span class="st">"level"</span>, color<span class="op">=</span><span class="st">"year"</span>)</span>
@@ -620,7 +620,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="4d318ee7" class="cell" data-execution_count="17">
+<div id="ab94525e" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    huron.ggplot()</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"year"</span>, <span class="st">"level"</span>, color<span class="op">=</span><span class="st">"year"</span>)</span>
@@ -638,7 +638,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="labels-for-break-labels" class="level2">
 <h2 class="anchored" data-anchor-id="labels-for-break-labels"><code>labels=</code> for Break Labels</h2>
-<div id="177d6dde" class="cell" data-execution_count="18">
+<div id="8b78ebd0" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>, color<span class="op">=</span><span class="st">"class"</span>)</span>
@@ -653,7 +653,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="4691e183" class="cell" data-execution_count="19">
+<div id="63afe9c2" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>, color<span class="op">=</span><span class="st">"class"</span>)</span>
@@ -671,7 +671,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="legend-merging" class="level2">
 <h2 class="anchored" data-anchor-id="legend-merging">Legend Merging</h2>
-<div id="3aa3cfc8" class="cell" data-execution_count="20">
+<div id="88c9720a" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>merged_legend_plot <span class="op">=</span> (</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>, color<span class="op">=</span><span class="st">"factor(cyl)"</span>, shape<span class="op">=</span><span class="st">"factor(cyl)"</span>)</span>
@@ -691,7 +691,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="d358b358" class="cell" data-execution_count="21">
+<div id="ed6a6820" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    merged_legend_plot</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    .labs(title<span class="op">=</span><span class="st">"Split guides"</span>)</span>
@@ -708,7 +708,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="legend-position" class="level2">
 <h2 class="anchored" data-anchor-id="legend-position">Legend Position</h2>
-<div id="fe13e189" class="cell" data-execution_count="22">
+<div id="9e9e2443" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>legend_position_plot <span class="op">=</span> (</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>, color<span class="op">=</span><span class="st">"factor(cyl)"</span>, shape<span class="op">=</span><span class="st">"factor(cyl)"</span>)</span>
@@ -727,7 +727,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="ddf4668c" class="cell" data-execution_count="23">
+<div id="3ab0ed05" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    legend_position_plot</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    .add_theme(legend_position<span class="op">=</span><span class="st">"none"</span>)</span>
@@ -743,7 +743,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="guide-customization" class="level2">
 <h2 class="anchored" data-anchor-id="guide-customization">Guide Customization</h2>
-<div id="dfdc9a88" class="cell" data-execution_count="24">
+<div id="54259969" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>guide_plot <span class="op">=</span> (</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>, color<span class="op">=</span><span class="st">"cyl"</span>)</span>
@@ -760,7 +760,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="7b2a3169" class="cell" data-execution_count="25">
+<div id="1d6183f0" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    guide_plot</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    .add_guides(color<span class="op">=</span>p9.guide_colorbar(reverse<span class="op">=</span><span class="va">True</span>))</span>
@@ -773,7 +773,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="7b6084fd" class="cell" data-execution_count="26">
+<div id="9ce1738b" class="cell" data-execution_count="26">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>guide_df <span class="op">=</span> pl.DataFrame(</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    {</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"x"</span>: <span class="bu">list</span>(<span class="bu">map</span>(<span class="bu">str</span>, <span class="bu">range</span>(<span class="dv">5</span>))),</span>
