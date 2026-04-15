@@ -224,7 +224,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>This notebook adapts the plotnine guide on geometric objects to the <code>plotnine_polars</code> style. Where the original page uses pandas-based wrangling, this version uses Polars.</p>
-<div id="36327cd3" class="cell" data-execution_count="1">
+<div id="3715d17c" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotnine <span class="im">as</span> p9</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotnine_polars</span>
@@ -234,7 +234,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="5fb1a3a9" class="cell" data-execution_count="2">
+<div id="7735d8b8" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mpg <span class="op">=</span> pl.from_pandas(mpg)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>huron <span class="op">=</span> pl.from_pandas(huron)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>diamonds <span class="op">=</span> pl.from_pandas(diamonds)</span>
@@ -353,7 +353,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="basic-use" class="level2">
 <h2 class="anchored" data-anchor-id="basic-use">Basic Use</h2>
 <p>Geom functions determine how mapped data becomes visible marks. Layers are drawn in the order they are added.</p>
-<div id="b011beb2" class="cell" data-execution_count="3">
+<div id="8a4e91c5" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>)</span>
@@ -373,7 +373,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="individual-geoms">Individual Geoms</h2>
 <section id="scatterplot-with-text" class="level3">
 <h3 class="anchored" data-anchor-id="scatterplot-with-text">Scatterplot With Text</h3>
-<div id="b0b768ef" class="cell" data-execution_count="4">
+<div id="7a09c6b3" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>highest_mpg <span class="op">=</span> mpg.<span class="bu">filter</span>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"hwy"</span>) <span class="op">==</span> pl.col(<span class="st">"hwy"</span>).<span class="bu">max</span>(),</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"cty"</span>) <span class="op">==</span> pl.col(<span class="st">"cty"</span>).<span class="bu">max</span>(),</span>
@@ -401,7 +401,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="barchart-on-counts" class="level3">
 <h3 class="anchored" data-anchor-id="barchart-on-counts">Barchart on Counts</h3>
-<div id="9c2bb92b" class="cell" data-execution_count="5">
+<div id="aba025d1" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> mpg.group_by(<span class="st">"class"</span>, <span class="st">"drv"</span>).<span class="bu">len</span>().rename({<span class="st">"len"</span>: <span class="st">"count"</span>})</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>(</span>
@@ -420,7 +420,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="rectangles" class="level3">
 <h3 class="anchored" data-anchor-id="rectangles">Rectangles</h3>
-<div id="c9231596" class="cell" data-execution_count="6">
+<div id="7002291c" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rectangles <span class="op">=</span> pl.DataFrame(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    {</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"xmin"</span>: [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>],</span>
@@ -449,7 +449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="collective-geoms-for-distributions">Collective Geoms for Distributions</h2>
 <section id="boxplots-and-violins" class="level3">
 <h3 class="anchored" data-anchor-id="boxplots-and-violins">Boxplots and Violins</h3>
-<div id="10218078" class="cell" data-execution_count="7">
+<div id="d3c2c969" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>selected_classes <span class="op">=</span> [<span class="st">"2seater"</span>, <span class="st">"compact"</span>, <span class="st">"midsize"</span>]</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>mpg_box <span class="op">=</span> mpg.<span class="bu">filter</span>(pl.col(<span class="st">"class"</span>).is_in(selected_classes))</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>mpg_violin <span class="op">=</span> mpg.<span class="bu">filter</span>(<span class="op">~</span>pl.col(<span class="st">"class"</span>).is_in(selected_classes))</span>
@@ -478,7 +478,7 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 </section>
 <section id="histograms-and-densities" class="level3">
 <h3 class="anchored" data-anchor-id="histograms-and-densities">Histograms and Densities</h3>
-<div id="53f884c7" class="cell" data-execution_count="8">
+<div id="8545d862" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"cty"</span>)</span>
@@ -495,7 +495,7 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 </div>
 </div>
 </div>
-<div id="48fc99b1" class="cell" data-execution_count="9">
+<div id="ad9f2507" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"cty"</span>)</span>
@@ -512,7 +512,7 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 </section>
 <section id="smoothing" class="level3">
 <h3 class="anchored" data-anchor-id="smoothing">Smoothing</h3>
-<div id="3c434747" class="cell" data-execution_count="10">
+<div id="c884fa41" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"displ"</span>, <span class="st">"hwy"</span>)</span>
@@ -531,7 +531,7 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 </section>
 <section id="collective-geoms-for-lines-and-fills" class="level2">
 <h2 class="anchored" data-anchor-id="collective-geoms-for-lines-and-fills">Collective Geoms for Lines and Fills</h2>
-<div id="35fb1b22" class="cell" data-execution_count="11">
+<div id="8d8f082c" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    huron.ggplot()</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"year"</span>, <span class="st">"level"</span>)</span>
@@ -546,7 +546,7 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 </div>
 </div>
 </div>
-<div id="d51e56e1" class="cell" data-execution_count="12">
+<div id="a338424b" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    huron.ggplot()</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"year"</span>, <span class="st">"level"</span>)</span>
@@ -566,7 +566,7 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 <h2 class="anchored" data-anchor-id="position-adjustments">Position Adjustments</h2>
 <section id="jitter-with-random-noise" class="level3">
 <h3 class="anchored" data-anchor-id="jitter-with-random-noise">Jitter With Random Noise</h3>
-<div id="d8d4c92a" class="cell" data-execution_count="13">
+<div id="e28fe796" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"cty"</span>, <span class="st">"hwy"</span>)</span>
@@ -580,7 +580,7 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 </div>
 </div>
 </div>
-<div id="3174db06" class="cell" data-execution_count="14">
+<div id="5810d305" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"cty"</span>, <span class="st">"hwy"</span>)</span>
@@ -597,7 +597,7 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 </section>
 <section id="dodge-and-fill-for-bars" class="level3">
 <h3 class="anchored" data-anchor-id="dodge-and-fill-for-bars">Dodge and Fill for Bars</h3>
-<div id="685a9f91" class="cell" data-execution_count="15">
+<div id="fc8b53be" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    diamonds.ggplot()</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"color"</span>, fill<span class="op">=</span><span class="st">"cut"</span>)</span>
@@ -612,7 +612,7 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 </div>
 </div>
 </div>
-<div id="a53f8ea9" class="cell" data-execution_count="16">
+<div id="6791669e" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    diamonds.ggplot()</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"color"</span>, fill<span class="op">=</span><span class="st">"cut"</span>)</span>
@@ -627,7 +627,7 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 </div>
 </div>
 </div>
-<div id="69e6c415" class="cell" data-execution_count="17">
+<div id="bf6f4edf" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    diamonds.ggplot()</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"color"</span>, fill<span class="op">=</span><span class="st">"cut"</span>)</span>
@@ -646,7 +646,7 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 </section>
 <section id="statistical-transformations" class="level2">
 <h2 class="anchored" data-anchor-id="statistical-transformations">Statistical Transformations</h2>
-<div id="1a0b15f5" class="cell" data-execution_count="18">
+<div id="64a74867" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"trans"</span>, <span class="st">"cty"</span>)</span>
@@ -667,7 +667,7 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 </div>
 </div>
 </div>
-<div id="221aebb7" class="cell" data-execution_count="19">
+<div id="3d7c08c6" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>mean_mpg <span class="op">=</span> mpg.group_by(<span class="st">"trans"</span>).agg(pl.col(<span class="st">"cty"</span>).mean())</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>mean_mpg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="19">
@@ -692,38 +692,6 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 </thead>
 <tbody>
 <tr class="odd">
-<td>"auto(l5)"</td>
-<td>14.717949</td>
-</tr>
-<tr class="even">
-<td>"manual(m5)"</td>
-<td>19.258621</td>
-</tr>
-<tr class="odd">
-<td>"auto(l4)"</td>
-<td>15.939759</td>
-</tr>
-<tr class="even">
-<td>"auto(s4)"</td>
-<td>18.666667</td>
-</tr>
-<tr class="odd">
-<td>"manual(m6)"</td>
-<td>16.894737</td>
-</tr>
-<tr class="even">
-<td>"auto(s5)"</td>
-<td>17.333333</td>
-</tr>
-<tr class="odd">
-<td>"auto(l3)"</td>
-<td>21.0</td>
-</tr>
-<tr class="even">
-<td>"auto(s6)"</td>
-<td>17.375</td>
-</tr>
-<tr class="odd">
 <td>"auto(av)"</td>
 <td>20.0</td>
 </tr>
@@ -731,12 +699,44 @@ Did you forget to specify a `group` aesthetic or to convert a numerical variable
 <td>"auto(l6)"</td>
 <td>13.666667</td>
 </tr>
+<tr class="odd">
+<td>"auto(l5)"</td>
+<td>14.717949</td>
+</tr>
+<tr class="even">
+<td>"auto(s6)"</td>
+<td>17.375</td>
+</tr>
+<tr class="odd">
+<td>"auto(s5)"</td>
+<td>17.333333</td>
+</tr>
+<tr class="even">
+<td>"auto(l3)"</td>
+<td>21.0</td>
+</tr>
+<tr class="odd">
+<td>"auto(l4)"</td>
+<td>15.939759</td>
+</tr>
+<tr class="even">
+<td>"manual(m5)"</td>
+<td>19.258621</td>
+</tr>
+<tr class="odd">
+<td>"auto(s4)"</td>
+<td>18.666667</td>
+</tr>
+<tr class="even">
+<td>"manual(m6)"</td>
+<td>16.894737</td>
+</tr>
 </tbody>
 </table>
 </div>
 </div>
 </div>
-<div id="60a7e3b1" class="cell" data-execution_count="20">
+<div id="0f9ccc84" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    mpg.ggplot()</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .aes(<span class="st">"trans"</span>, <span class="st">"cty"</span>)</span>
