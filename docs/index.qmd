@@ -5,9 +5,7 @@ jupyter: plotnine-polars
 
 # Documentation and examples for `plotnine_polars`
 
-This site adapts the examples from
-[plot-nine-fluid](https://iangow.github.io/plot-nine-fluid/) to the
-`plotnine_polars` package.
+This site collects examples and guides for the `plotnine_polars` package.
 
 The focus here is slightly different from the original site:
 
@@ -96,8 +94,6 @@ and guide customization in the `plotnine_polars` style.
 
 Most notebooks on this site are adapted from the official
 [plotnine gallery](https://plotnine.org/gallery/) and
-[plotnine guides](https://plotnine.org/guide/), using the original
-[plot-nine-fluid](https://iangow.github.io/plot-nine-fluid/) site as the
-starting point for the fluent API structure.
+[plotnine guides](https://plotnine.org/guide/).
 :::
 :::
