@@ -1,12 +1,13 @@
 [project]
 name = "plotnine-polars"
-version = "0.2.0"
+version = "0.2.1"
 description = "Polars dataframe namespace and fluent API for plotnine"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "plotnine",
     "polars>=1.24.0",
+    "pyarrow",
 ]
 
 [project.optional-dependencies]

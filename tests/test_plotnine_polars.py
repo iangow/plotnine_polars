@@ -1,3 +1,7 @@
+import matplotlib
+
+matplotlib.use("Agg")
+
 import polars as pl
 from plotnine import aes, coord_trans, facet_null, geom_line, geom_point, labs
 from plotnine import scale_x_continuous
@@ -80,3 +84,16 @@ def test_fluent_api_handles_name_collisions():
 def test_import_registers_namespace():
     assert plotnine_polars is not None
     assert hasattr(pl.DataFrame({"x": [1]}), "ggplot")
+
+
+def test_polars_plot_draws():
+    """Exercise the Polars-to-pandas conversion, including runtime dependencies."""
+    from matplotlib import pyplot as plt
+
+    df = pl.DataFrame({"x": [1, 2, 3], "y": [3, 2, 1]})
+    figure = df.ggplot().aes("x", "y").geom_point().draw()
+    try:
+        assert len(figure.axes) == 1
+        assert len(figure.axes[0].collections[0].get_offsets()) == 3
+    finally:
+        plt.close(figure)
